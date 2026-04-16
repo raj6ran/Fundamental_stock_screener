@@ -13,7 +13,7 @@ from config import (
     DCF_PARAMS, GRAHAM_NUMBER_MULTIPLIER, TOTAL_MAX_SCORE, VERDICTS,
     SECTOR_PE_NORMS, SECTOR_PB_NORMS, CYCLICAL_SECTORS,
     PROFITABILITY, GROWTH, FINANCIAL_HEALTH, CASH_FLOW,
-    MOAT_TYPES, SECTOR_MOAT_HINTS, EARNINGS_QUALITY, INSTITUTIONAL,
+    MOAT_TYPES, MOAT_THRESHOLDS, SECTOR_MOAT_HINTS, EARNINGS_QUALITY, INSTITUTIONAL,
     SECTOR_DIVERSIFICATION, SECTOR_THREATS, SECTOR_TAILWINDS,
     MANAGEMENT, RED_FLAGS, COFFEE_CAN,
 )
@@ -50,7 +50,8 @@ def _clamp(v, lo=0.0, hi=10.0):
 
 
 def _avg(parts: list[float]) -> float:
-    return _clamp(round(sum(parts) / len(parts), 1)) if parts else 0.0
+    clean = [p for p in parts if not pd.isna(p)]
+    return _clamp(round(sum(clean) / len(clean), 1)) if clean else 0.0
 
 
 # ═══════════════════════════════════════════════
@@ -340,6 +341,7 @@ def _identify_moat_types(row: pd.Series, sector: str = "") -> list[str]:
     """Identify which of the 7 moat types a stock likely possesses."""
     moats: list[str] = []
     hints = SECTOR_MOAT_HINTS.get(sector, [])
+    MT = MOAT_THRESHOLDS
 
     roce = row.get("roce_pct", np.nan)
     opm = row.get("operating_margin_pct", np.nan)
@@ -347,29 +349,29 @@ def _identify_moat_types(row: pd.Series, sector: str = "") -> list[str]:
     rev_g = row.get("revenue_cagr_3y", np.nan)
     pb = row.get("pb", np.nan)
 
-    if not pd.isna(opm) and opm >= 20 and not pd.isna(mcap) and mcap >= 50000:
+    if not pd.isna(opm) and opm >= MT["cost_advantage_opm"] and not pd.isna(mcap) and mcap >= MT["cost_advantage_mcap_cr"]:
         moats.append("cost_advantage")
-    elif "cost_advantage" in hints and not pd.isna(opm) and opm >= 15:
+    elif "cost_advantage" in hints and not pd.isna(opm) and opm >= MT["cost_advantage_hint_opm"]:
         moats.append("cost_advantage")
 
-    if "network_effect" in hints and not pd.isna(rev_g) and rev_g >= 15:
+    if "network_effect" in hints and not pd.isna(rev_g) and rev_g >= MT["network_effect_rev_g"]:
         moats.append("network_effect")
 
-    if not pd.isna(roce) and roce >= 20 and "switching_cost" in hints:
+    if not pd.isna(roce) and roce >= MT["switching_cost_roce"] and "switching_cost" in hints:
         moats.append("switching_cost")
 
-    if not pd.isna(pb) and pb >= 5 and not pd.isna(opm) and opm >= 18:
+    if not pd.isna(pb) and pb >= MT["intangible_pb"] and not pd.isna(opm) and opm >= MT["intangible_opm"]:
         moats.append("intangible_assets")
-    elif "intangible_assets" in hints and not pd.isna(opm) and opm >= 15:
+    elif "intangible_assets" in hints and not pd.isna(opm) and opm >= MT["intangible_hint_opm"]:
         moats.append("intangible_assets")
 
     if "regulatory" in hints:
         moats.append("regulatory")
 
-    if "distribution" in hints and not pd.isna(mcap) and mcap >= 20000:
+    if "distribution" in hints and not pd.isna(mcap) and mcap >= MT["distribution_mcap_cr"]:
         moats.append("distribution")
 
-    if "data_advantage" in hints and not pd.isna(opm) and opm >= 15:
+    if "data_advantage" in hints and not pd.isna(opm) and opm >= MT["data_advantage_opm"]:
         moats.append("data_advantage")
 
     return moats
@@ -804,11 +806,10 @@ def analyze_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # 10-dimension scoring
-    score_rows = []
-    for _, row in df.iterrows():
-        sector = row.get("sector", "")
-        score_rows.append(score_stock_full(row, sector))
-    score_df = pd.DataFrame(score_rows, index=df.index)
+    score_df = df.apply(
+        lambda row: score_stock_full(row, row.get("sector", "")),
+        axis=1, result_type="expand",
+    )
     df = pd.concat([df, score_df], axis=1)
 
     # Coffee Can
@@ -819,5 +820,11 @@ def analyze_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     # Rank by total score
     df = df.sort_values("total_score", ascending=False)
+
+    # Validate expected columns exist
+    _required = ["verdict", "total_score", "sector", "ticker"]
+    missing = [c for c in _required if c not in df.columns]
+    if missing:
+        raise ValueError(f"analyze_dataframe: missing expected columns {missing}")
 
     return df

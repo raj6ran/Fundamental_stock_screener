@@ -7,7 +7,6 @@ build/
 *.egg
 
 # Generated outputs
-report.html
 screener_results.csv
 
 # IDE

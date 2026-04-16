@@ -19,10 +19,10 @@ from analyzer import analyze_dataframe
 from report_generator import build_report
 
 
-def run_screener(sectors: dict, selected_sector: str | None = None):
+def run_screener(sectors: dict, selected_sector: str | None = None, slow: bool = False):
     """Run the full screening pipeline and generate HTML report."""
 
-    all_data = pd.DataFrame()
+    all_dfs: list[pd.DataFrame] = []
 
     sector_items = sectors.items()
     if selected_sector:
@@ -38,23 +38,26 @@ def run_screener(sectors: dict, selected_sector: str | None = None):
         print(f"\n>>> Screening: {sector_name}")
         print(f"    {sector_info['description']} ({len(sector_info['stocks'])} stocks)")
 
-        df = fetch_sector_data(sector_name, sector_info["stocks"])
+        df = fetch_sector_data(sector_name, sector_info["stocks"], slow_mode=slow)
         if df.empty:
             print(f"    No data retrieved for {sector_name}")
             continue
 
         analyzed = analyze_dataframe(df)
-        all_data = pd.concat([all_data, analyzed], ignore_index=True)
+        all_dfs.append(analyzed)
 
         # Print console summary
-        for _, row in analyzed.head(3).iterrows():
+        for i in range(min(3, len(analyzed))):
+            row = analyzed.iloc[i]
             v = row.get("verdict", "?")
             t = row.get("total_score", 0)
             print(f"    {row.get('ticker','?'):>15s}  {t:5.1f}/100  {v}")
 
-    if all_data.empty:
+    if not all_dfs:
         print("\nNo data retrieved. Check network connection.")
         sys.exit(1)
+
+    all_data = pd.concat(all_dfs, ignore_index=True)
 
     # Sort final
     all_data = all_data.sort_values("total_score", ascending=False).reset_index(drop=True)
@@ -79,6 +82,7 @@ def run_screener(sectors: dict, selected_sector: str | None = None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="NSE Stock Screener — 100-Point System")
     parser.add_argument("--sector", type=str, default=None, help="Screen a single sector")
+    parser.add_argument("--slow", action="store_true", help="Fetch stocks sequentially with 3s delay (avoids rate limits)")
     args = parser.parse_args()
 
-    run_screener(NSE_SECTORS, selected_sector=args.sector)
+    run_screener(NSE_SECTORS, selected_sector=args.sector, slow=args.slow)

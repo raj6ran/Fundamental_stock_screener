@@ -58,9 +58,20 @@ MOAT_TREND_ICONS = {
 # Formatting helpers
 # ─────────────────────────────────────────────
 
+def _is_valid_number(val) -> bool:
+    """Check if value is a usable numeric (not None, NaN, or Inf)."""
+    if val is None:
+        return False
+    if not isinstance(val, (int, float, np.integer, np.floating)):
+        return False
+    if math.isnan(float(val)) or math.isinf(float(val)):
+        return False
+    return True
+
+
 def _fmt(val, fmt=".1f", prefix="", suffix="", na="—"):
     """Format a numeric value for HTML display."""
-    if val is None or (isinstance(val, float) and (math.isnan(val) or math.isinf(val))):
+    if not _is_valid_number(val):
         return na
     try:
         return f"{prefix}{val:{fmt}}{suffix}"
@@ -70,7 +81,7 @@ def _fmt(val, fmt=".1f", prefix="", suffix="", na="—"):
 
 def _fmt_cr(val, na="—"):
     """Format market cap in Crores."""
-    if val is None or (isinstance(val, float) and math.isnan(val)):
+    if not _is_valid_number(val):
         return na
     if val >= 100000:
         return f"{val/100000:.1f}L Cr"
@@ -83,7 +94,7 @@ def _pct(val, na="—"):
 
 def _score_color(score, max_val=10):
     """Return color hex based on score ratio."""
-    if score is None or (isinstance(score, float) and math.isnan(score)):
+    if not _is_valid_number(score):
         return "#555"
     ratio = score / max_val
     if ratio >= 0.75:
@@ -475,14 +486,15 @@ def _rankings_table_html(df, table_id="rankings") -> str:
             pass
         return val
 
-    for rank, (_, row) in enumerate(df.iterrows(), 1):
+    for rank in range(len(df)):
+        row = df.iloc[rank]
         verdict = row.get("verdict", "REJECT")
         fg, _ = VERDICT_COLORS.get(verdict, ("#aaa", "#333"))
         total = row.get("total_score", 0)
         is_coffee = bool(row.get("coffee_can"))
 
         lines.append('<tr>')
-        lines.append(f'<td data-val="{rank}">{rank}</td>')
+        lines.append(f'<td data-val="{rank + 1}">{rank + 1}</td>')
         lines.append(f'<td><a href="#{escape(str(row.get("ticker", "")))}">{escape(str(row.get("ticker", "")))}</a></td>')
         lines.append(f'<td>{escape(str(row.get("name", "")))}</td>')
         lines.append(f'<td>{escape(str(row.get("sector", "")))}</td>')
@@ -619,8 +631,8 @@ def _top_picks_html(df) -> str:
         top = df.head(5)
 
     lines = []
-    for _, row in top.iterrows():
-        lines.append(_stock_card_html(row))
+    for i in range(len(top)):
+        lines.append(_stock_card_html(top.iloc[i]))
     return "\n".join(lines)
 
 
@@ -708,11 +720,12 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
                           f'<th>PE</th><th>ROCE%</th><th>D/E</th><th>Piotroski</th><th>Moat</th>'
                           f'</tr></thead><tbody>')
 
-        for rank, (_, row) in enumerate(sec_df.iterrows(), 1):
+        for rank in range(len(sec_df)):
+            row = sec_df.iloc[rank]
             verdict = row.get("verdict", "REJECT")
             total = row.get("total_score", 0)
             html_parts.append(f'<tr>'
-                              f'<td>{rank}</td>'
+                              f'<td>{rank + 1}</td>'
                               f'<td><a href="#{escape(str(row.get("ticker", "")))}">{escape(str(row.get("ticker", "")))}</a></td>'
                               f'<td style="color:{_score_color(total, 100)};font-weight:700">{total:.1f}</td>'
                               f'<td>{_verdict_badge(verdict)}</td>'
@@ -730,7 +743,8 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
     # ── Tab 5: All Stocks (detailed cards) ──
     html_parts.append('<div id="tab-allstocks" class="tab-panel">')
     html_parts.append('<h2>All Stocks &mdash; Detailed Analysis</h2>')
-    for _, row in df.iterrows():
+    for i in range(len(df)):
+        row = df.iloc[i]
         ticker = str(row.get("ticker", ""))
         html_parts.append(f'<div id="{escape(ticker)}">')
         html_parts.append(_stock_card_html(row))

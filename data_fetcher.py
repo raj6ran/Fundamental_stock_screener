@@ -9,14 +9,17 @@ Supports parallel fetching via ThreadPoolExecutor for speed.
 """
 
 import time
+import logging
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import yfinance as yf
+from yfinance.exceptions import YFException
 import pandas as pd
 import numpy as np
 
 _print_lock = threading.Lock()
+log = logging.getLogger(__name__)
 
 
 def fetch_stock_info(ticker: str, retries: int = 2) -> dict | None:
@@ -36,7 +39,8 @@ def fetch_stock_info(ticker: str, retries: int = 2) -> dict | None:
             return _extract_fundamentals(
                 ticker, info, financials, balance, cashflow, quarterly_fin,
             )
-        except Exception:
+        except (KeyError, ValueError, TypeError, AttributeError, OSError, YFException) as exc:
+            log.debug("%s attempt %d failed: %s", ticker, attempt + 1, exc)
             if attempt < retries:
                 time.sleep(1)
             continue
@@ -55,33 +59,55 @@ def fetch_sector_data(
     sector_name: str,
     tickers: list[str],
     max_workers: int = 5,
+    slow_mode: bool = False,
 ) -> pd.DataFrame:
-    """Fetch data for all tickers in a sector using parallel threads."""
+    """Fetch data for all tickers in a sector using parallel threads.
+    If slow_mode=True, fetches sequentially with 3s delay to avoid rate limits.
+    """
     rows: list[dict] = []
     ok = 0
     skip = 0
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(_fetch_one, t, sector_name): t
-            for t in tickers
-        }
-        for future in as_completed(futures):
-            ticker = futures[future]
+    if slow_mode:
+        for i, t in enumerate(tickers):
+            if i > 0:
+                time.sleep(3)
             try:
-                _, data = future.result()
-                with _print_lock:
-                    if data:
-                        rows.append(data)
-                        ok += 1
-                        print(f"  {ticker:>20s} ... OK  ({ok + skip}/{len(tickers)})")
-                    else:
-                        skip += 1
-                        print(f"  {ticker:>20s} ... SKIP ({ok + skip}/{len(tickers)})")
-            except Exception:
+                _, data = _fetch_one(t, sector_name)
+                if data:
+                    rows.append(data)
+                    ok += 1
+                    print(f"  {t:>20s} ... OK  ({ok + skip}/{len(tickers)})")
+                else:
+                    skip += 1
+                    print(f"  {t:>20s} ... SKIP ({ok + skip}/{len(tickers)})")
+            except (KeyError, ValueError, TypeError, AttributeError, OSError, YFException) as exc:
                 skip += 1
-                with _print_lock:
-                    print(f"  {ticker:>20s} ... ERROR ({ok + skip}/{len(tickers)})")
+                log.debug("%s fetch error: %s", t, exc)
+                print(f"  {t:>20s} ... ERROR ({ok + skip}/{len(tickers)})")
+    else:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(_fetch_one, t, sector_name): t
+                for t in tickers
+            }
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    _, data = future.result()
+                    with _print_lock:
+                        if data:
+                            rows.append(data)
+                            ok += 1
+                            print(f"  {ticker:>20s} ... OK  ({ok + skip}/{len(tickers)})")
+                        else:
+                            skip += 1
+                            print(f"  {ticker:>20s} ... SKIP ({ok + skip}/{len(tickers)})")
+                except (KeyError, ValueError, TypeError, AttributeError, OSError, YFException) as exc:
+                    skip += 1
+                    with _print_lock:
+                        log.debug("%s fetch error: %s", ticker, exc)
+                        print(f"  {ticker:>20s} ... ERROR ({ok + skip}/{len(tickers)})")
 
     print(f"    => {ok} fetched, {skip} skipped")
     return pd.DataFrame(rows)
@@ -126,8 +152,14 @@ def _safe_divide(a, b):
 def _row(df: pd.DataFrame | None, label: str) -> pd.Series | None:
     if df is None or df.empty:
         return None
+    # Exact match first
     for idx in df.index:
-        if label.lower() in str(idx).lower():
+        if str(idx).strip() == label:
+            return df.loc[idx]
+    # Fallback to substring
+    label_low = label.lower()
+    for idx in df.index:
+        if label_low in str(idx).lower():
             return df.loc[idx]
     return None
 

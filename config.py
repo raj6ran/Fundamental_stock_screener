@@ -164,6 +164,19 @@ CASH_FLOW = {
 # Moat trend: eroding moat (declining ROCE + rising revenue =
 # competing on price) is WORSE than no moat.
 
+MOAT_THRESHOLDS = {
+    "cost_advantage_opm":       20,    # OPM % for cost advantage (no hint)
+    "cost_advantage_mcap_cr":   50000, # Min market cap for cost advantage (no hint)
+    "cost_advantage_hint_opm":  15,    # OPM % for cost advantage (with sector hint)
+    "network_effect_rev_g":     15,    # Revenue CAGR % for network effect
+    "switching_cost_roce":      20,    # ROCE % for switching cost
+    "intangible_opm":           18,    # OPM % for intangible (no hint)
+    "intangible_pb":            5,     # PB for intangible (no hint)
+    "intangible_hint_opm":      15,    # OPM % for intangible (with hint)
+    "distribution_mcap_cr":     20000, # Min market cap for distribution moat
+    "data_advantage_opm":       15,    # OPM % for data advantage
+}
+
 MOAT_TYPES = {
     "cost_advantage":    "Lowest cost producer / economies of scale",
     "network_effect":    "Value increases with more users",
