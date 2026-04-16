@@ -368,7 +368,7 @@ NSE_SECTORS = {
             # Nifty 500 expansion
             "AUBANK.NS", "EQUITASBNK.NS", "UJJIVANSFB.NS", "KARURVYSYA.NS", "CUB.NS",
             "INDIANB.NS", "IDBI.NS", "MAHABANK.NS", "MOTILALOFS.NS", "POONAWALLA.NS",
-            "FIVESTAR.NS", "CRISIL.NS",
+            "FIVESTAR.NS", "CRISIL.NS", "SOUTHBANK.NS"
         ],
     },
     "FMCG": {
