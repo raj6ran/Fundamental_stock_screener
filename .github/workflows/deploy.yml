@@ -17,9 +17,41 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  # ── Phase 1: Build sector list ──────────────────────────────
+  matrix-setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 5
+    outputs:
+      sectors: ${{ steps.sectors.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Get sector list
+        id: sectors
+        run: |
+          matrix=$(python -c "
+          import json
+          from config import NSE_SECTORS
+          print(json.dumps(list(NSE_SECTORS.keys())))
+          ")
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  # ── Phase 2: Screen each sector in parallel ─────────────────
+  screen:
+    needs: matrix-setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        sector: ${{ fromJson(needs.matrix-setup.outputs.sectors) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,8 +65,43 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run stock screener
-        run: python screener.py
+      - name: Screen sector — ${{ matrix.sector }}
+        run: python screener.py --sector "${{ matrix.sector }}" --export-csv sector_data --slow
+
+      - name: Upload sector CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: sector-${{ strategy.job-index }}
+          path: sector_data/
+          retention-days: 1
+
+  # ── Phase 3: Combine results and generate HTML report ───────
+  build:
+    needs: screen
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download all sector data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sector-*
+          path: sector_data/
+          merge-multiple: true
+
+      - name: Combine and generate report
+        run: python screener.py --combine sector_data/
 
       - name: Prepare Pages artifact
         run: |
@@ -46,6 +113,7 @@ jobs:
         with:
           path: _site
 
+  # ── Phase 4: Deploy to GitHub Pages ─────────────────────────
   deploy:
     needs: build
     runs-on: ubuntu-latest

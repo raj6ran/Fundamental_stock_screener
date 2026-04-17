@@ -6,9 +6,13 @@ Fetches data per sector, runs 10-filter analysis, generates HTML report.
 Usage:
     python screener.py                          # Full run, all sectors
     python screener.py --sector "IT"            # Single sector
+    python screener.py --sector "IT" --export-csv sector_data/  # Export analyzed CSV
+    python screener.py --combine sector_data/   # Combine CSVs and generate report
 """
 
 import argparse
+import glob
+import os
 import sys
 import time
 import pandas as pd
@@ -19,8 +23,13 @@ from analyzer import analyze_dataframe
 from report_generator import build_report
 
 
-def run_screener(sectors: dict, selected_sector: str | None = None, slow: bool = False):
-    """Run the full screening pipeline and generate HTML report."""
+def run_screener(
+    sectors: dict,
+    selected_sector: str | None = None,
+    slow: bool = False,
+    export_csv_dir: str | None = None,
+):
+    """Run the screening pipeline. Optionally export sector CSV instead of HTML."""
 
     all_dfs: list[pd.DataFrame] = []
 
@@ -59,6 +68,38 @@ def run_screener(sectors: dict, selected_sector: str | None = None, slow: bool =
 
     all_data = pd.concat(all_dfs, ignore_index=True)
 
+    # If exporting CSV for CI matrix jobs, write and exit early
+    if export_csv_dir:
+        os.makedirs(export_csv_dir, exist_ok=True)
+        safe_name = (selected_sector or "all").replace(" ", "_").replace("&", "and")
+        csv_path = os.path.join(export_csv_dir, f"{safe_name}.csv")
+        all_data.to_csv(csv_path, index=False)
+        print(f"\n  Exported {len(all_data)} stocks to {csv_path}")
+        return
+
+    _finalize_and_report(all_data)
+
+
+def combine_csvs(csv_dir: str):
+    """Combine sector CSVs from parallel CI jobs into a single HTML report."""
+    csv_files = sorted(glob.glob(os.path.join(csv_dir, "*.csv")))
+    if not csv_files:
+        print(f"No CSV files found in {csv_dir}")
+        sys.exit(1)
+
+    print(f"Combining {len(csv_files)} sector CSV files...")
+    dfs = []
+    for f in csv_files:
+        df = pd.read_csv(f)
+        print(f"  {os.path.basename(f)}: {len(df)} stocks")
+        dfs.append(df)
+
+    all_data = pd.concat(dfs, ignore_index=True)
+    _finalize_and_report(all_data)
+
+
+def _finalize_and_report(all_data: pd.DataFrame):
+    """Deduplicate, print summary, and generate HTML report."""
     # Deduplicate: keep the highest-scoring entry when a stock appears in multiple sectors
     all_data = all_data.sort_values("total_score", ascending=False)
     before = len(all_data)
@@ -88,6 +129,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="NSE Stock Screener — 100-Point System")
     parser.add_argument("--sector", type=str, default=None, help="Screen a single sector")
     parser.add_argument("--slow", action="store_true", help="Fetch stocks sequentially with 3s delay (avoids rate limits)")
+    parser.add_argument("--export-csv", type=str, default=None, metavar="DIR",
+                        help="Export analyzed data as CSV to DIR (for CI matrix jobs)")
+    parser.add_argument("--combine", type=str, default=None, metavar="DIR",
+                        help="Combine sector CSVs from DIR and generate HTML report")
     args = parser.parse_args()
 
-    run_screener(NSE_SECTORS, selected_sector=args.sector, slow=args.slow)
+    if args.combine:
+        combine_csvs(args.combine)
+    else:
+        run_screener(NSE_SECTORS, selected_sector=args.sector, slow=args.slow,
+                     export_csv_dir=args.export_csv)
