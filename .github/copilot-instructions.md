@@ -32,7 +32,7 @@ See [claude.md](../claude.md) for detailed AI agent instructions.
 ```bash
 pip install -r requirements.txt
 python screener.py                          # Full run (HTML output)
-python screener.py --sector "IT"            # Single sector
+python screener.py --sector "Information Technology"            # Single sector
 ```
 
 ## Conventions

@@ -227,43 +227,61 @@ Data source tracking is available via `_src` dict in fetched data.
 
 ---
 
-## Sectors Covered (NSE India) — 13 Sectors, ~510 Stocks
+## Sectors Covered (NSE India) — 22 Sectors, ~730 Stocks
 
 | # | Sector | Stocks | Notes |
 |---|--------|--------|-------|
-| 1 | **IT** | ~46 | TCS, Infosys, HCL, Wipro, LTIM, Persistent, Coforge, KPIT, eClerx, OFSS, Naukri… |
-| 2 | **Pharma & Healthcare** | ~45 | Sun Pharma, Dr Reddy, Cipla, Divi's, Zydus, Apollo, Max Health, Biocon, Lupin… |
-| 3 | **Banking & Finance** | ~52 | HDFC, ICICI, Kotak, Axis, SBI, Bajaj Finance, PB Fintech, Paytm, KFINTECH, LIC… |
-| 4 | **FMCG** | ~33 | HUL, ITC, Nestle, Britannia, Dabur, Marico, Godrej CP, Emami, Patanjali, Bikaji… |
-| 5 | **Auto & Ancillaries** | ~33 | Maruti, M&M, Tata Motors, Bajaj Auto, TVS, Eicher, MRF, Motherson, Bosch… |
-| 6 | **Infrastructure & Capital Goods** | ~38 | L&T, ABB, Siemens, HAL, BEL, IRCTC, Kaynes, Cochin Ship, Mazagon Dock… |
-| 7 | **Energy & Power** | ~35 | Reliance, NTPC, Power Grid, Adani Green, Tata Power, ONGC, JSW Energy, IEX… |
-| 8 | **Chemicals & Materials** | ~48 | Pidilite, Asian Paints, SRF, PI Industries, UltraTech, Shree Cement, ACC… |
-| 9 | **Telecom & Media** | ~23 | Bharti Airtel, Indus Towers, Sun TV, Nazara, Saregama, Tata Comm… |
-| 10 | **Metals & Mining** | ~28 | Tata Steel, JSW Steel, Hindalco, Vedanta, NMDC, Hindustan Zinc, APL Apollo… |
-| 11 | **Consumer Discretionary** | ~42 | Titan, Trent, DMart, Jubilant, Page, Havells, Polycab, Dixon, Zomato, Nykaa… |
-| 12 | **Real Estate** | ~16 | DLF, Godrej Properties, Oberoi, Prestige, Lodha, Brigade, Embassy REIT… |
-| 13 | **Textiles & Apparel** | ~18 | Trident, Welspun, KPR Mill, Gokaldas, Kitex, Arvind, Dollar, Rupa… |
+| 1 | **Automobile and Auto Components** | ~49 | Maruti, M&M, Tata Motors, Bajaj Auto, TVS, Eicher, MRF, Motherson, Bosch… |
+| 2 | **Capital Goods** | ~50 | L&T, ABB, Siemens, HAL, BEL, Kaynes, Cochin Ship, Mazagon Dock, IRCTC… |
+| 3 | **Chemicals** | ~48 | Pidilite, Asian Paints, SRF, PI Industries, Atul, Navin Fluorine, Deepak Nitrite… |
+| 4 | **Construction Materials** | ~43 | UltraTech, Shree Cement, Ambuja, ACC, Dalmia, Astral, Kajaria, APL Apollo… |
+| 5 | **Consumer Durables** | ~46 | Titan, Havells, Polycab, Dixon, Blue Star, Crompton, Voltas, Kalyan Jewellers… |
+| 6 | **Consumer Services** | ~45 | Jubilant Food, Zomato, IRCTC, Naukri, Delhivery, PVR INOX, Wonderla… |
+| 7 | **Diversified** | ~50 | Reliance, Adani Enterprises, ITC, L&T, Grasim, 3M India, Siemens… |
+| 8 | **Fast Moving Consumer Goods** | ~46 | HUL, ITC, Nestle, Britannia, Dabur, Marico, Godrej CP, Colgate, Emami… |
+| 9 | **Fertilizers & Agrochemicals** | ~50 | Coromandel, Chambal, GNFC, PI Industries, UPL, Rallis, Dhanuka, Bayer… |
+| 10 | **Financial Services** | ~63 | HDFC Bank, ICICI, Kotak, Axis, SBI, Bajaj Finance, LIC, HDFC AMC, BSE, CDSL… |
+| 11 | **Forest Materials** | ~48 | JK Paper, TNPL, UFlex, EPL, Century Ply, Greenply, Cosmo Films… |
+| 12 | **Healthcare** | ~49 | Sun Pharma, Dr Reddy, Cipla, Divi's, Zydus, Apollo Hospitals, Max Health… |
+| 13 | **Information Technology** | ~50 | TCS, Infosys, HCL, Wipro, LTIM, Persistent, Coforge, KPIT, Naukri… |
+| 14 | **Media, Entertainment & Publication** | ~44 | Zee, Sun TV, PVR INOX, Nazara, Saregama, NDTV, Jagran, DB Corp… |
+| 15 | **Metals & Mining** | ~47 | Tata Steel, JSW Steel, Hindalco, Vedanta, NMDC, Hindustan Zinc, Coal India… |
+| 16 | **Oil, Gas & Consumable Fuels** | ~46 | Reliance, ONGC, BPCL, IOC, GAIL, Coal India, Petronet, IGL, MGL… |
+| 17 | **Real Estate** | ~46 | DLF, Godrej Properties, Oberoi, Prestige, Lodha, Brigade, Embassy REIT… |
+| 18 | **Retailing** | ~45 | DMart, Trent, Titan, Nykaa, Zomato, Shoppers Stop, Jubilant, Metro Brands… |
+| 19 | **Services** | ~46 | TCS, Infosys, Quess, TeamLease, CRISIL, Delhivery, BlueDart, KFINTECH… |
+| 20 | **Telecommunication** | ~44 | Bharti Airtel, Indus Towers, Tata Comm, HFCL, Tejas Networks, Railtel… |
+| 21 | **Textiles** | ~47 | Trident, Welspun, KPR Mill, Gokaldas, Kitex, Arvind, Page Industries… |
+| 22 | **Utilities** | ~47 | NTPC, Power Grid, Tata Power, NHPC, JSW Energy, Suzlon, Waaree, PFC, IEX… |
 
 ### Sector PE Norms (avg / cheap / expensive)
 | Sector | Avg PE | Cheap | Expensive |
 |--------|--------|-------|-----------|
-| IT | 28 | 20 | 38 |
-| Pharma & Healthcare | 30 | 22 | 42 |
-| Banking & Finance | 15 | 10 | 22 |
-| FMCG | 45 | 30 | 60 |
-| Auto & Ancillaries | 22 | 14 | 30 |
-| Infrastructure | 25 | 16 | 35 |
-| Energy & Power | 12 | 8 | 18 |
-| Chemicals & Materials | 30 | 20 | 42 |
-| Telecom & Media | 20 | 12 | 30 |
+| Automobile and Auto Components | 22 | 14 | 30 |
+| Capital Goods | 25 | 16 | 35 |
+| Chemicals | 30 | 20 | 42 |
+| Construction Materials | 25 | 15 | 38 |
+| Consumer Durables | 45 | 28 | 65 |
+| Consumer Services | 40 | 25 | 60 |
+| Diversified | 20 | 12 | 30 |
+| Fast Moving Consumer Goods | 45 | 30 | 60 |
+| Fertilizers & Agrochemicals | 15 | 8 | 25 |
+| Financial Services | 15 | 10 | 22 |
+| Forest Materials | 12 | 7 | 20 |
+| Healthcare | 30 | 22 | 42 |
+| Information Technology | 28 | 20 | 38 |
+| Media, Entertainment & Publication | 22 | 12 | 35 |
 | Metals & Mining | 10 | 6 | 16 |
-| Consumer Discretionary | 45 | 28 | 65 |
+| Oil, Gas & Consumable Fuels | 12 | 8 | 18 |
 | Real Estate | 25 | 15 | 40 |
-| Textiles & Apparel | 18 | 10 | 28 |
+| Retailing | 50 | 30 | 75 |
+| Services | 28 | 18 | 40 |
+| Telecommunication | 20 | 12 | 30 |
+| Textiles | 18 | 10 | 28 |
+| Utilities | 14 | 8 | 22 |
 
 ### Cyclical Sectors
-Metals & Mining, Energy & Power, Auto & Ancillaries, Real Estate.
+Metals & Mining, Oil Gas & Consumable Fuels, Automobile and Auto Components, Real Estate, Construction Materials, Fertilizers & Agrochemicals.
 
 ---
 
@@ -284,9 +302,9 @@ Metals & Mining, Energy & Power, Auto & Ancillaries, Real Estate.
 - **Red flags override everything**: even an 80/100 stock gets REJECTED if it has a binary red flag.
 
 ### Coverage
-- Started with 10 sectors / 100 stocks → expanded to 13 sectors / ~510 stocks.
-- Goal: cover NSE 500 + mid-cap opportunities for comprehensive gem discovery.
-- Duplicate tickers across sectors removed (e.g., RECLTD in Banking only, PAGEIND in Consumer Disc only).
+- Started with 10 sectors / 100 stocks → expanded to 22 sectors / ~730 unique stocks (deduplicated from ~1,100).
+- Uses official NSE sector classification (22 sectors) for comprehensive coverage.
+- Goal: cover all NSE sectors with top 50 stocks each for comprehensive gem discovery.
 
 ### HTML Report
 - Dark theme (GitHub-inspired), 6 tabs: Dashboard, Rankings, Top Picks, By Sector, All Stocks, Framework.

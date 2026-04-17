@@ -57,40 +57,62 @@ VERDICTS = {
 # If implied growth >> historical growth, stock is overpriced.
 
 SECTOR_PE_NORMS = {
-    "IT":                             {"avg": 28, "cheap": 20, "expensive": 38},
-    "Pharma & Healthcare":            {"avg": 30, "cheap": 22, "expensive": 42},
-    "Banking & Finance":              {"avg": 15, "cheap": 10, "expensive": 22},
-    "FMCG":                           {"avg": 45, "cheap": 30, "expensive": 60},
-    "Auto & Ancillaries":             {"avg": 22, "cheap": 14, "expensive": 30},
-    "Infrastructure & Capital Goods": {"avg": 25, "cheap": 16, "expensive": 35},
-    "Energy & Power":                 {"avg": 12, "cheap": 8,  "expensive": 18},
-    "Chemicals & Materials":          {"avg": 30, "cheap": 20, "expensive": 42},
-    "Telecom & Media":                {"avg": 20, "cheap": 12, "expensive": 30},
-    "Metals & Mining":                {"avg": 10, "cheap": 6,  "expensive": 16},
-    "Consumer Discretionary":         {"avg": 45, "cheap": 28, "expensive": 65},
-    "Real Estate":                    {"avg": 25, "cheap": 15, "expensive": 40},
-    "Textiles & Apparel":             {"avg": 18, "cheap": 10, "expensive": 28},
+    "Automobile and Auto Components":     {"avg": 22, "cheap": 14, "expensive": 30},
+    "Capital Goods":                      {"avg": 25, "cheap": 16, "expensive": 35},
+    "Chemicals":                          {"avg": 30, "cheap": 20, "expensive": 42},
+    "Construction Materials":             {"avg": 25, "cheap": 15, "expensive": 38},
+    "Consumer Durables":                  {"avg": 45, "cheap": 28, "expensive": 65},
+    "Consumer Services":                  {"avg": 40, "cheap": 25, "expensive": 60},
+    "Diversified":                        {"avg": 20, "cheap": 12, "expensive": 30},
+    "Fast Moving Consumer Goods":         {"avg": 45, "cheap": 30, "expensive": 60},
+    "Fertilizers & Agrochemicals":        {"avg": 15, "cheap": 8,  "expensive": 25},
+    "Financial Services":                 {"avg": 15, "cheap": 10, "expensive": 22},
+    "Forest Materials":                   {"avg": 12, "cheap": 7,  "expensive": 20},
+    "Healthcare":                         {"avg": 30, "cheap": 22, "expensive": 42},
+    "Information Technology":             {"avg": 28, "cheap": 20, "expensive": 38},
+    "Media, Entertainment & Publication": {"avg": 22, "cheap": 12, "expensive": 35},
+    "Metals & Mining":                    {"avg": 10, "cheap": 6,  "expensive": 16},
+    "Oil, Gas & Consumable Fuels":        {"avg": 12, "cheap": 8,  "expensive": 18},
+    "Real Estate":                        {"avg": 25, "cheap": 15, "expensive": 40},
+    "Retailing":                          {"avg": 50, "cheap": 30, "expensive": 75},
+    "Services":                           {"avg": 28, "cheap": 18, "expensive": 40},
+    "Telecommunication":                  {"avg": 20, "cheap": 12, "expensive": 30},
+    "Textiles":                           {"avg": 18, "cheap": 10, "expensive": 28},
+    "Utilities":                          {"avg": 14, "cheap": 8,  "expensive": 22},
 }
 
 SECTOR_PB_NORMS = {
-    "IT":                             {"avg": 8,   "cheap": 4,   "expensive": 15},
-    "Pharma & Healthcare":            {"avg": 5,   "cheap": 2,   "expensive": 10},
-    "Banking & Finance":              {"avg": 2.5, "cheap": 1,   "expensive": 4},
-    "FMCG":                           {"avg": 12,  "cheap": 6,   "expensive": 25},
-    "Auto & Ancillaries":             {"avg": 5,   "cheap": 2,   "expensive": 10},
-    "Infrastructure & Capital Goods": {"avg": 5,   "cheap": 2,   "expensive": 10},
-    "Energy & Power":                 {"avg": 2,   "cheap": 1,   "expensive": 4},
-    "Chemicals & Materials":          {"avg": 5,   "cheap": 2,   "expensive": 10},
-    "Telecom & Media":                {"avg": 3,   "cheap": 1,   "expensive": 6},
-    "Metals & Mining":                {"avg": 1.5, "cheap": 0.7, "expensive": 3},
-    "Consumer Discretionary":         {"avg": 10,  "cheap": 4,   "expensive": 20},
-    "Real Estate":                    {"avg": 2.5, "cheap": 1.2, "expensive": 5},
-    "Textiles & Apparel":             {"avg": 3,   "cheap": 1.5, "expensive": 6},
+    "Automobile and Auto Components":     {"avg": 5,   "cheap": 2,   "expensive": 10},
+    "Capital Goods":                      {"avg": 5,   "cheap": 2,   "expensive": 10},
+    "Chemicals":                          {"avg": 5,   "cheap": 2,   "expensive": 10},
+    "Construction Materials":             {"avg": 4,   "cheap": 1.5, "expensive": 8},
+    "Consumer Durables":                  {"avg": 10,  "cheap": 4,   "expensive": 20},
+    "Consumer Services":                  {"avg": 8,   "cheap": 3,   "expensive": 18},
+    "Diversified":                        {"avg": 3,   "cheap": 1,   "expensive": 6},
+    "Fast Moving Consumer Goods":         {"avg": 12,  "cheap": 6,   "expensive": 25},
+    "Fertilizers & Agrochemicals":        {"avg": 3,   "cheap": 1,   "expensive": 6},
+    "Financial Services":                 {"avg": 2.5, "cheap": 1,   "expensive": 4},
+    "Forest Materials":                   {"avg": 2,   "cheap": 0.8, "expensive": 4},
+    "Healthcare":                         {"avg": 5,   "cheap": 2,   "expensive": 10},
+    "Information Technology":             {"avg": 8,   "cheap": 4,   "expensive": 15},
+    "Media, Entertainment & Publication": {"avg": 3,   "cheap": 1,   "expensive": 6},
+    "Metals & Mining":                    {"avg": 1.5, "cheap": 0.7, "expensive": 3},
+    "Oil, Gas & Consumable Fuels":        {"avg": 2,   "cheap": 1,   "expensive": 4},
+    "Real Estate":                        {"avg": 2.5, "cheap": 1.2, "expensive": 5},
+    "Retailing":                          {"avg": 12,  "cheap": 5,   "expensive": 25},
+    "Services":                           {"avg": 6,   "cheap": 2,   "expensive": 12},
+    "Telecommunication":                  {"avg": 3,   "cheap": 1,   "expensive": 6},
+    "Textiles":                           {"avg": 3,   "cheap": 1.5, "expensive": 6},
+    "Utilities":                          {"avg": 2,   "cheap": 1,   "expensive": 4},
 }
 
 # Cyclical sectors need normalised PE (avg over cycle, not TTM)
 # Source: Howard Marks -- "The Most Important Thing"
-CYCLICAL_SECTORS = {"Metals & Mining", "Energy & Power", "Auto & Ancillaries", "Real Estate"}
+CYCLICAL_SECTORS = {
+    "Metals & Mining", "Oil, Gas & Consumable Fuels",
+    "Automobile and Auto Components", "Real Estate",
+    "Construction Materials", "Fertilizers & Agrochemicals",
+}
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -188,19 +210,28 @@ MOAT_TYPES = {
 }
 
 SECTOR_MOAT_HINTS = {
-    "IT":                             ["switching_cost", "intangible_assets", "data_advantage"],
-    "Pharma & Healthcare":            ["intangible_assets", "regulatory", "distribution"],
-    "Banking & Finance":              ["switching_cost", "network_effect", "regulatory"],
-    "FMCG":                           ["intangible_assets", "distribution", "cost_advantage"],
-    "Auto & Ancillaries":             ["intangible_assets", "cost_advantage", "distribution"],
-    "Infrastructure & Capital Goods": ["regulatory", "cost_advantage", "switching_cost"],
-    "Energy & Power":                 ["regulatory", "cost_advantage", "distribution"],
-    "Chemicals & Materials":          ["cost_advantage", "intangible_assets", "switching_cost"],
-    "Telecom & Media":                ["network_effect", "regulatory", "distribution"],
-    "Metals & Mining":                ["cost_advantage", "regulatory"],
-    "Consumer Discretionary":         ["intangible_assets", "distribution", "switching_cost"],
-    "Real Estate":                    ["regulatory", "distribution", "cost_advantage"],
-    "Textiles & Apparel":             ["cost_advantage", "distribution", "intangible_assets"],
+    "Automobile and Auto Components":     ["intangible_assets", "cost_advantage", "distribution"],
+    "Capital Goods":                      ["regulatory", "cost_advantage", "switching_cost"],
+    "Chemicals":                          ["cost_advantage", "intangible_assets", "switching_cost"],
+    "Construction Materials":             ["cost_advantage", "distribution", "regulatory"],
+    "Consumer Durables":                  ["intangible_assets", "distribution", "switching_cost"],
+    "Consumer Services":                  ["intangible_assets", "network_effect", "switching_cost"],
+    "Diversified":                        ["cost_advantage", "distribution", "regulatory"],
+    "Fast Moving Consumer Goods":         ["intangible_assets", "distribution", "cost_advantage"],
+    "Fertilizers & Agrochemicals":        ["regulatory", "cost_advantage", "distribution"],
+    "Financial Services":                 ["switching_cost", "network_effect", "regulatory"],
+    "Forest Materials":                   ["cost_advantage", "regulatory"],
+    "Healthcare":                         ["intangible_assets", "regulatory", "distribution"],
+    "Information Technology":             ["switching_cost", "intangible_assets", "data_advantage"],
+    "Media, Entertainment & Publication": ["intangible_assets", "network_effect", "data_advantage"],
+    "Metals & Mining":                    ["cost_advantage", "regulatory"],
+    "Oil, Gas & Consumable Fuels":        ["regulatory", "cost_advantage", "distribution"],
+    "Real Estate":                        ["regulatory", "distribution", "cost_advantage"],
+    "Retailing":                          ["distribution", "intangible_assets", "network_effect"],
+    "Services":                           ["switching_cost", "intangible_assets", "data_advantage"],
+    "Telecommunication":                  ["network_effect", "regulatory", "distribution"],
+    "Textiles":                           ["cost_advantage", "distribution", "intangible_assets"],
+    "Utilities":                          ["regulatory", "cost_advantage", "distribution"],
 }
 
 
@@ -240,30 +271,36 @@ INSTITUTIONAL = {
 # Source: Dalio (macro), Marathon AM (capital cycles)
 
 SECTOR_TAILWINDS = {
-    "IT": 7, "Pharma & Healthcare": 8, "Banking & Finance": 7,
-    "FMCG": 7, "Auto & Ancillaries": 7,
-    "Infrastructure & Capital Goods": 9, "Energy & Power": 6,
-    "Chemicals & Materials": 7, "Telecom & Media": 5, "Metals & Mining": 5,
-    "Consumer Discretionary": 8,
-    "Real Estate": 8, "Textiles & Apparel": 7,
+    "Automobile and Auto Components": 7, "Capital Goods": 9, "Chemicals": 7,
+    "Construction Materials": 7, "Consumer Durables": 8, "Consumer Services": 8,
+    "Diversified": 6, "Fast Moving Consumer Goods": 7,
+    "Fertilizers & Agrochemicals": 6, "Financial Services": 7,
+    "Forest Materials": 5, "Healthcare": 8, "Information Technology": 7,
+    "Media, Entertainment & Publication": 7, "Metals & Mining": 5,
+    "Oil, Gas & Consumable Fuels": 6, "Real Estate": 8, "Retailing": 8,
+    "Services": 7, "Telecommunication": 7, "Textiles": 6, "Utilities": 7,
 }
 
 SECTOR_DIVERSIFICATION = {
-    "IT": 7, "Pharma & Healthcare": 6, "Banking & Finance": 5,
-    "FMCG": 7, "Auto & Ancillaries": 5,
-    "Infrastructure & Capital Goods": 5, "Energy & Power": 4,
-    "Chemicals & Materials": 6, "Telecom & Media": 4, "Metals & Mining": 3,
-    "Consumer Discretionary": 7,
-    "Real Estate": 3, "Textiles & Apparel": 5,
+    "Automobile and Auto Components": 5, "Capital Goods": 5, "Chemicals": 6,
+    "Construction Materials": 4, "Consumer Durables": 7, "Consumer Services": 7,
+    "Diversified": 8, "Fast Moving Consumer Goods": 7,
+    "Fertilizers & Agrochemicals": 4, "Financial Services": 5,
+    "Forest Materials": 3, "Healthcare": 6, "Information Technology": 7,
+    "Media, Entertainment & Publication": 5, "Metals & Mining": 3,
+    "Oil, Gas & Consumable Fuels": 4, "Real Estate": 3, "Retailing": 6,
+    "Services": 6, "Telecommunication": 4, "Textiles": 5, "Utilities": 4,
 }
 
 SECTOR_THREATS = {
-    "IT": 6, "Pharma & Healthcare": 7, "Banking & Finance": 6,
-    "FMCG": 8, "Auto & Ancillaries": 5,
-    "Infrastructure & Capital Goods": 7, "Energy & Power": 5,
-    "Chemicals & Materials": 6, "Telecom & Media": 5, "Metals & Mining": 4,
-    "Consumer Discretionary": 6,
-    "Real Estate": 5, "Textiles & Apparel": 5,
+    "Automobile and Auto Components": 5, "Capital Goods": 7, "Chemicals": 6,
+    "Construction Materials": 6, "Consumer Durables": 6, "Consumer Services": 6,
+    "Diversified": 5, "Fast Moving Consumer Goods": 8,
+    "Fertilizers & Agrochemicals": 5, "Financial Services": 6,
+    "Forest Materials": 4, "Healthcare": 7, "Information Technology": 6,
+    "Media, Entertainment & Publication": 5, "Metals & Mining": 4,
+    "Oil, Gas & Consumable Fuels": 5, "Real Estate": 5, "Retailing": 6,
+    "Services": 6, "Telecommunication": 5, "Textiles": 5, "Utilities": 6,
 }
 
 
@@ -324,258 +361,335 @@ COFFEE_CAN = {
 # ═══════════════════════════════════════════════════════════════
 
 NSE_SECTORS = {
-    "IT": {
-        "description": "Information Technology & Software Services",
+    # ─────────────────────────────────────────────
+    # 1. Automobile and Auto Components
+    # ─────────────────────────────────────────────
+    "Automobile and Auto Components": {
+        "description": "Passenger & Commercial Vehicle OEMs, Auto Parts, Tyres, Batteries, EV",
         "stocks": [
-            # Large-cap
-            "TCS.NS", "INFY.NS", "HCLTECH.NS", "WIPRO.NS", "TECHM.NS",
-            "LTIM.NS", "PERSISTENT.NS", "COFORGE.NS", "MPHASIS.NS", "LTTS.NS",
-            # Mid-cap
-            "TATAELXSI.NS", "KPITTECH.NS", "CYIENT.NS", "ZENSAR.NS", "BIRLASOFT.NS",
-            "HAPPSTMNDS.NS", "INTELLECT.NS", "NEWGEN.NS", "ROUTE.NS", "MASTEK.NS",
-            # Extended universe
-            "OFSS.NS", "ECLERX.NS", "TANLA.NS", "RATEGAIN.NS", "AFFLE.NS",
-            "LATENTVIEW.NS", "DATAPATTNS.NS", "SONATSOFTW.NS", "NIITLTD.NS", "FIRSTSOURCE.NS",
-            "CMSINFO.NS", "NUCLEUS.NS", "JUSTDIAL.NS", "TATATECH.NS", "3IINFOLTD.NS",
-            "QUICKHEAL.NS", "ZENSARTECH.NS", "BSOFT.NS", "MAPMYINDIA.NS", "NAUKRI.NS",
-            "NETWEB.NS", "SASKEN.NS", "EMUDHRA.NS", "SUBEXLTD.NS", "RAMCOSYS.NS",
-            "INFIBEAM.NS", "SAKSOFT.NS", "AURIONPRO.NS",
-        ],
-    },
-    "Pharma & Healthcare": {
-        "description": "Pharmaceuticals, API, Hospitals, Diagnostics",
-        "stocks": [
-            # Large-cap
-            "SUNPHARMA.NS", "DRREDDY.NS", "CIPLA.NS", "DIVISLAB.NS", "ZYDUSLIFE.NS",
-            "AUROPHARMA.NS", "APOLLOHOSP.NS", "MAXHEALTH.NS", "FORTIS.NS", "LALPATHLAB.NS",
-            # Mid-cap
-            "BIOCON.NS", "LUPIN.NS", "TORNTPHARM.NS", "ALKEM.NS", "GLENMARK.NS",
-            "IPCALAB.NS", "NATCOPHARMA.NS", "LAURUSLABS.NS", "METROPOLIS.NS", "SYNGENE.NS",
-            # Extended universe
-            "ABBOTINDIA.NS", "PFIZER.NS", "GLAXO.NS", "MANKIND.NS", "JBCHEPHARM.NS",
-            "GRANULES.NS", "AJANTPHARM.NS", "ERIS.NS", "POLYMED.NS", "RAINBOW.NS",
-            "THYROCARE.NS", "GLAND.NS", "MEDPLUS.NS", "CONCORD.NS", "SUVENPHAR.NS",
-            "PPLPHARMA.NS", "ASTRAZEN.NS", "SANOFI.NS", "CAPLIPOINT.NS", "NEULANDLAB.NS",
-            "MARKSANS.NS", "SOLARA.NS", "SHILPAMED.NS", "IOLCP.NS", "YATHARTH.NS",
-            "VIJAYA.NS", "KRSNAA.NS", "STARHEALTH.NS", "GLORIALAB.NS",
-            # Nifty 500 expansion
-            "MEDANTA.NS",
-        ],
-    },
-    "Banking & Finance": {
-        "description": "Private Banks, PSU Banks, NBFCs, Insurance, AMCs",
-        "stocks": [
-            # Large-cap
-            "HDFCBANK.NS", "ICICIBANK.NS", "KOTAKBANK.NS", "AXISBANK.NS", "SBIN.NS",
-            "BAJFINANCE.NS", "BAJAJFINSV.NS", "HDFCLIFE.NS", "SBILIFE.NS", "CHOLAFIN.NS",
-            # Mid-cap (PSU banks, NBFCs, insurance)
-            "BANKBARODA.NS", "PNB.NS", "INDUSINDBK.NS", "FEDERALBNK.NS", "SBICARD.NS",
-            "MUTHOOTFIN.NS", "ICICIGI.NS", "ICICIPRULI.NS", "MANAPPURAM.NS", "CANBK.NS",
-            # Extended universe
-            "SHRIRAMFIN.NS", "M&MFIN.NS", "LICHSGFIN.NS", "RECLTD.NS", "IRFC.NS",
-            "LICI.NS", "PAYTM.NS", "POLICYBZR.NS", "ABCAPITAL.NS", "IDFCFIRSTB.NS",
-            "BANDHANBNK.NS", "RBLBANK.NS", "IOB.NS", "CENTRALBK.NS", "UNIONBANK.NS",
-            "KFINTECH.NS", "ANGELONE.NS", "BSE.NS", "CDSL.NS", "MCX.NS",
-            "NIACL.NS", "GICRE.NS", "HDFCAMC.NS", "NIPPONIND.NS", "UTIAMC.NS",
-            "SUNDARMFIN.NS", "PNBHOUSING.NS", "CANFINHOME.NS", "AAVAS.NS", "CREDITACC.NS",
-            # Nifty 500 expansion
-            "AUBANK.NS", "EQUITASBNK.NS", "UJJIVANSFB.NS", "KARURVYSYA.NS", "CUB.NS",
-            "INDIANB.NS", "IDBI.NS", "MAHABANK.NS", "MOTILALOFS.NS", "POONAWALLA.NS",
-            "FIVESTAR.NS", "CRISIL.NS", "SOUTHBANK.NS"
-        ],
-    },
-    "FMCG": {
-        "description": "Fast Moving Consumer Goods, Food & Beverages",
-        "stocks": [
-            # Large-cap
-            "HINDUNILVR.NS", "ITC.NS", "NESTLEIND.NS", "BRITANNIA.NS", "DABUR.NS",
-            "MARICO.NS", "GODREJCP.NS", "COLPAL.NS", "TATACONSUM.NS", "VBL.NS",
-            # Mid-cap
-            "EMAMILTD.NS", "JYOTHYLAB.NS", "PGHH.NS", "RADICO.NS", "BIKAJI.NS",
-            "HONAUT.NS", "GILLETTE.NS", "ZYDUSWELL.NS", "HATSUN.NS", "GODFRYPHLP.NS",
-            # Extended universe
-            "KRBL.NS", "MCDOWELL-N.NS", "UBL.NS", "CCL.NS", "BAJAJCON.NS",
-            "VSTIND.NS", "VENKEYS.NS", "BALRAMCHIN.NS", "EIDPARRY.NS", "BECTORFOOD.NS",
-            "PATANJALI.NS", "GLOBUSSPR.NS", "DODLA.NS", "AVANTIFEED.NS", "HERITGFOOD.NS",
-            "VADILALIND.NS", "CASTROLIND.NS", "APLLTD.NS",
-            # Nifty 500 expansion
-            "AWL.NS", "RAJESHEXPO.NS",
-        ],
-    },
-    "Auto & Ancillaries": {
-        "description": "Automobile OEMs, Auto Parts, EV, Tyres, Batteries",
-        "stocks": [
-            # Large-cap OEMs
             "MARUTI.NS", "M&M.NS", "TATAMOTORS.NS", "BAJAJ-AUTO.NS", "HEROMOTOCO.NS",
             "EICHERMOT.NS", "TVSMOTOR.NS", "ASHOKLEY.NS", "FORCEMOT.NS", "OLECTRA.NS",
-            # Mid-cap ancillaries
-            "BALKRISIND.NS", "MOTHERSON.NS", "BHARATFORG.NS", "BOSCHLTD.NS", "SONACOMS.NS",
+            "MOTHERSON.NS", "BOSCHLTD.NS", "BHARATFORG.NS", "BALKRISIND.NS", "SONACOMS.NS",
             "TIINDIA.NS", "SUNDRMFAST.NS", "ENDURANCE.NS", "UNOMINDA.NS", "CRAFTSMAN.NS",
-            # Tyres & batteries
-            "EXIDEIND.NS", "AMARARAJA.NS", "APOLLOTYRE.NS", "MRF.NS", "CEATLTD.NS",
-            "JKTYRE.NS",
-            # Bearings & precision
-            "SCHAEFFLER.NS", "SKFINDIA.NS", "TIMKEN.NS",
-            # Extended universe
-            "SUPRAJIT.NS", "GABRIEL.NS", "LUMAXTECH.NS", "SANDHAR.NS", "JTEKTINDIA.NS",
-            "VARROC.NS", "SWARAJENG.NS", "MAHINDCIE.NS", "TATAMTRDVR.NS", "JAMNAAUTO.NS",
-            # Nifty 500 expansion
-            "JBMA.NS",
+            "MRF.NS", "APOLLOTYRE.NS", "CEATLTD.NS", "JKTYRE.NS", "EXIDEIND.NS",
+            "AMARARAJA.NS", "SCHAEFFLER.NS", "SKFINDIA.NS", "TIMKEN.NS", "SUPRAJIT.NS",
+            "GABRIEL.NS", "LUMAXTECH.NS", "SANDHAR.NS", "JTEKTINDIA.NS", "VARROC.NS",
+            "SWARAJENG.NS", "MAHINDCIE.NS", "TATAMTRDVR.NS", "JAMNAAUTO.NS", "JBMA.NS",
+            "FIEM.NS", "ANANDAS.NS", "SETCO.NS", "WABCOINDIA.NS", "WHEELS.NS",
+            "JTLIND.NS", "MINDA.NS", "VSTTILLERS.NS", "RACL.NS",
         ],
     },
-    "Infrastructure & Capital Goods": {
-        "description": "Construction, Engineering, Defence, Railways, Electricals, Shipbuilding",
+    # ─────────────────────────────────────────────
+    # 2. Capital Goods
+    # ─────────────────────────────────────────────
+    "Capital Goods": {
+        "description": "Engineering, Defence, Railways, Electricals, Shipbuilding, Industrial Machinery",
         "stocks": [
-            # Large-cap
             "LT.NS", "ABB.NS", "SIEMENS.NS", "HAL.NS", "BEL.NS",
-            "IRCTC.NS", "CUMMINSIND.NS", "THERMAX.NS", "GRINFRA.NS", "ESCORTS.NS",
-            # Mid-cap
-            "BHEL.NS", "KAYNES.NS", "AIAENG.NS", "CGPOWER.NS", "TITAGARH.NS",
-            "RVNL.NS", "IRCON.NS", "NBCC.NS", "KEC.NS", "ENGINERSIN.NS",
-            # Defence & shipbuilding
-            "COCHINSHIP.NS", "MAZDOCK.NS", "GRSE.NS", "BDL.NS", "ASTRAMICRO.NS",
-            "BEML.NS",
-            # Ports & infra
-            "ADANIPORTS.NS", "NCC.NS", "PNC.NS", "GPPL.NS", "HCC.NS",
-            # Electricals & automation
-            "HONEYWELL.NS", "TRIVENITUR.NS", "ELECON.NS", "KENNAMETAL.NS",
-            # Railways & housing
-            "RAILTEL.NS", "HUDCO.NS", "HGINFRA.NS", "MANINFRA.NS", "JKINFRA.NS",
-            # Nifty 500 expansion
-            "KPIL.NS", "PRAJ.NS", "ELGIEQUIP.NS", "JSWINFRA.NS", "VOLTAMP.NS", "ACE.NS",
+            "CUMMINSIND.NS", "THERMAX.NS", "BHEL.NS", "CGPOWER.NS", "KAYNES.NS",
+            "COCHINSHIP.NS", "MAZDOCK.NS", "GRSE.NS", "BDL.NS", "BEML.NS",
+            "ASTRAMICRO.NS", "HONEYWELL.NS", "TRIVENITUR.NS", "ELECON.NS", "KENNAMETAL.NS",
+            "VOLTAMP.NS", "ACE.NS", "AIAENG.NS", "TITAGARH.NS", "KEC.NS",
+            "ENGINERSIN.NS", "PRAJ.NS", "ELGIEQUIP.NS", "RVNL.NS", "IRCON.NS",
+            "GRINFRA.NS", "ESCORTS.NS", "KPIL.NS", "NBCC.NS", "MANINFRA.NS",
+            "JKINFRA.NS", "HCC.NS", "PNC.NS", "GPPL.NS", "HGINFRA.NS",
+            "NCC.NS", "HUDCO.NS", "ISGEC.NS", "GMRINFRA.NS", "JSWINFRA.NS",
+            "MAZDA.NS",
         ],
     },
-    "Energy & Power": {
-        "description": "Oil & Gas, Renewables, Power Utilities, Gas Distribution",
+    # ─────────────────────────────────────────────
+    # 3. Chemicals
+    # ─────────────────────────────────────────────
+    "Chemicals": {
+        "description": "Specialty Chemicals, Agrochemicals, Polymers, Paints",
         "stocks": [
-            # Large-cap
-            "RELIANCE.NS", "NTPC.NS", "POWERGRID.NS", "ADANIGREEN.NS", "TATAPOWER.NS",
-            "BPCL.NS", "IOC.NS", "GAIL.NS", "COALINDIA.NS", "NHPC.NS",
-            # Mid-cap
-            "ONGC.NS", "HINDPETRO.NS", "PETRONET.NS", "IGL.NS", "MGL.NS",
-            "JSWENERGY.NS", "SJVN.NS", "TORNTPOWER.NS", "CESC.NS", "PFC.NS",
-            # Extended
-            "ADANIENT.NS", "ADANIPOWER.NS", "GUJGASLTD.NS", "GSPL.NS", "ATGL.NS",
-            "MRPL.NS", "CHENNPETRO.NS", "OIL.NS", "AEGISCHEM.NS", "IREDA.NS",
-            "KPIGREEN.NS", "WAAREE.NS", "SUZLON.NS", "INOXWIND.NS", "GIPCL.NS",
-            "POWERMECH.NS", "RPOWER.NS", "JPPOWER.NS",
-            # Nifty 500 expansion
-            "IEX.NS",
-        ],
-    },
-    "Chemicals & Materials": {
-        "description": "Specialty Chemicals, Paints, Agrochemicals, Cement, Polymers",
-        "stocks": [
-            # Large-cap
             "PIDILITIND.NS", "ASIANPAINT.NS", "SRF.NS", "ATUL.NS", "PIIND.NS",
-            "DEEPAKFERT.NS", "CLEAN.NS", "NAVINFLUOR.NS", "FLUOROCHEM.NS", "TATACHEM.NS",
-            # Mid-cap chemicals
-            "DEEPAKNTR.NS", "AARTIIND.NS", "GALAXYSURF.NS", "SUMICHEM.NS", "UPL.NS",
-            "BASF.NS", "LXCHEM.NS", "ALKYLAMINE.NS", "FINEORG.NS", "SUDARSCHEM.NS",
-            # Extended chemicals
-            "VINATIORGA.NS", "NOCIL.NS", "ROSSARI.NS", "APCOTEXIND.NS", "TIRUMALCHM.NS",
-            "CHEMPLAST.NS", "GUJALKALI.NS", "IONEXCHANG.NS", "RALLIS.NS", "BALAMINES.NS",
-            "NEOGEN.NS", "ANUPAM.NS",
-            # Cement & building materials
+            "NAVINFLUOR.NS", "FLUOROCHEM.NS", "TATACHEM.NS", "CLEAN.NS", "DEEPAKNTR.NS",
+            "AARTIIND.NS", "GALAXYSURF.NS", "SUMICHEM.NS", "UPL.NS", "BASF.NS",
+            "LXCHEM.NS", "ALKYLAMINE.NS", "FINEORG.NS", "SUDARSCHEM.NS", "VINATIORGA.NS",
+            "NOCIL.NS", "ROSSARI.NS", "APCOTEXIND.NS", "CHEMPLAST.NS", "GUJALKALI.NS",
+            "IONEXCHANG.NS", "BALAMINES.NS", "NEOGEN.NS", "ANUPAM.NS", "RALLIS.NS",
+            "BERGEPAINT.NS", "KANSAINER.NS", "GODREJIND.NS", "TIRUMALCHM.NS", "ORIENTCEM.NS",
+            "EPIGRAL.NS", "IGPL.NS", "GHCL.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 4. Construction Materials
+    # ─────────────────────────────────────────────
+    "Construction Materials": {
+        "description": "Cement, Building Materials, Pipes, Ceramics",
+        "stocks": [
             "ULTRACEMCO.NS", "SHREECEM.NS", "AMBUJACEM.NS", "ACC.NS", "DALBHARAT.NS",
-            "JKCEMENT.NS", "RAMCOCEM.NS", "INDIACEM.NS",
-            # Paints
-            "BERGEPAINT.NS", "KANSAINER.NS",
-            # Abrasives & glass
-            "GRINDWELL.NS", "CARBORUNIV.NS", "TARSONS.NS",
-            # Nifty 500 expansion — fertilizers & agrochemicals
-            "COROMANDEL.NS", "CHAMBLFERT.NS", "GNFC.NS", "GSFC.NS",
-            "GODREJIND.NS", "GRASIM.NS", "SUPREMEIND.NS", "NUVOCO.NS", "DHANUKA.NS",
+            "JKCEMENT.NS", "RAMCOCEM.NS", "INDIACEM.NS", "NUVOCO.NS", "BIRLACEM.NS",
+            "STARCEM.NS", "HEIDELBERG.NS", "SAGCEM.NS", "DECCAN.NS", "FINOLEX.NS",
+            "KAJARIACER.NS", "CERA.NS", "ORIENTBELL.NS", "SOMANY.NS", "HSIL.NS",
+            "JKLAKSHMI.NS", "SAGAR.NS", "KESORAMIND.NS", "PRISMJOINS.NS", "JKIL.NS",
+            "SRHHYPOLTD.NS", "HINDWAREAP.NS",
         ],
     },
-    "Telecom & Media": {
-        "description": "Telecom Operators, Media, Broadcasting, Digital Platforms",
+    # ─────────────────────────────────────────────
+    # 5. Consumer Durables
+    # ─────────────────────────────────────────────
+    "Consumer Durables": {
+        "description": "Electronics, Appliances, Jewellery, Watches, Lighting",
         "stocks": [
-            # Telecom operators
-            "BHARTIARTL.NS", "IDEA.NS", "INDUSTOWER.NS", "TTML.NS",
-            # Media & entertainment
-            "ZEEL.NS", "PVRINOX.NS", "SUNTV.NS", "NAZARA.NS", "SAREGAMA.NS",
-            "HATHWAY.NS", "DEN.NS", "TV18BRDCST.NS", "NETWORK18.NS", "NDTV.NS",
-            # Extended
-            "DISH.NS", "BALAJITELE.NS", "SHEMAROO.NS", "TIPSINDLTD.NS",
-            "DBCORP.NS", "JAGRAN.NS", "GTPL.NS", "TVTODAY.NS", "NAVNETEDUL.NS",
-            # Nifty 500 expansion
-            "TATACOMM.NS",
+            "ORIENTELEC.NS", "TITAN.NS", "HAVELLS.NS", "VOLTAS.NS", "POLYCAB.NS",
+            "DIXON.NS", "BLUESTAR.NS", "CROMPTON.NS", "WHIRLPOOL.NS", "AMBER.NS",
+            "VGUARD.NS", "SYMPHONY.NS", "IFBIND.NS", "TTKPRESTIG.NS", "BAJAJELEC.NS",
+            "STOVEKRAFT.NS", "BAJAJCON.NS", "BATAINDIA.NS", "RELAXO.NS", "BOROSIL.NS",
+            "SAFARI.NS", "VIPIND.NS", "CAMPUS.NS", "PAGEIND.NS", "RAYMOND.NS",
+            "MANYAVAR.NS", "HONAUT.NS", "DOMS.NS",
         ],
     },
+    # ─────────────────────────────────────────────
+    # 6. Consumer Services
+    # ─────────────────────────────────────────────
+    "Consumer Services": {
+        "description": "Hotels, Restaurants, Tourism, QSR, Education, E-commerce",
+        "stocks": [
+            "IRCTC.NS", "INDIGO.NS", "WONDERLA.NS", "INDHOTEL.NS", "MHRIL.NS",
+            "CARTRADE.NS", "LEMONTRE.NS", "CHALET.NS", "JUBLFOOD.NS", "DEVYANI.NS",
+            "SAPPHIRE.NS", "WESTLIFE.NS", "ZOMATO.NS", "BARBEQUE.NS", "NAUKRI.NS",
+            "JUSTDIAL.NS", "NAVNETEDUL.NS", "APTECH.NS", "MAHSEAMLES.NS", "GATI.NS",
+            "THOMASCOOK.NS", "EASEMYTRIP.NS", "PVRINOX.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 7. Diversified
+    # ─────────────────────────────────────────────
+    "Diversified": {
+        "description": "Diversified Conglomerates, Multi-sector Holdings",
+        "stocks": [
+            "GRASIM.NS", "ADANIENT.NS", "3MINDIA.NS", "DCMSHRIRAM.NS", "RPSGVENT.NS",
+            "TVSSCS.NS", "BHARATRAS.NS", "BAJAJHLDNG.NS", "EDELWEISS.NS", "PIRAMALENT.NS",
+            "WOCKPHARMA.NS", "CG.NS", "ESSELPRO.NS", "NBVENTURES.NS", "SHILCHAR.NS",
+            "KIRLOSENG.NS", "INGERRAND.NS", "GREAVESCOT.NS", "EVERESTIND.NS", "HBLPOWER.NS",
+            "AARTIDRUGS.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 8. Fast Moving Consumer Goods
+    # ─────────────────────────────────────────────
+    "Fast Moving Consumer Goods": {
+        "description": "Food, Beverages, Personal Care, Household Products",
+        "stocks": [
+            "GILLETTE.NS", "PGHH.NS", "VBL.NS", "CCL.NS", "ITC.NS",
+            "TATACONSUM.NS", "EMAMILTD.NS", "HINDUNILVR.NS", "NESTLEIND.NS", "BRITANNIA.NS",
+            "DABUR.NS", "MARICO.NS", "GODREJCP.NS", "COLPAL.NS", "JYOTHYLAB.NS",
+            "RADICO.NS", "BIKAJI.NS", "ZYDUSWELL.NS", "HATSUN.NS", "GODFRYPHLP.NS",
+            "MCDOWELL-N.NS", "UBL.NS", "BALRAMCHIN.NS", "EIDPARRY.NS", "KRBL.NS",
+            "PATANJALI.NS", "DODLA.NS", "AVANTIFEED.NS", "HERITGFOOD.NS", "VADILALIND.NS",
+            "APLLTD.NS", "BECTORFOOD.NS", "AWL.NS", "RAJESHEXPO.NS", "VSTIND.NS",
+            "VENKEYS.NS", "PRATAAP.NS", "BCONCEPTS.NS", "UFLEX.NS", "JUBLPHARMA.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 9. Fertilizers & Agrochemicals
+    # ─────────────────────────────────────────────
+    "Fertilizers & Agrochemicals": {
+        "description": "Fertilizers, Crop Protection, Seeds, Agrochemicals",
+        "stocks": [
+            "DEEPAKFERT.NS", "ZUARIIND.NS", "COROMANDEL.NS", "CHAMBLFERT.NS", "GNFC.NS",
+            "GSFC.NS", "NFL.NS", "RCF.NS", "FACT.NS", "MANGCHEFER.NS",
+            "KSCL.NS", "DHANUKA.NS", "BAYERCROP.NS", "INSECTICID.NS", "SHARDACROP.NS",
+            "ASTEC.NS", "KAVERI.NS", "DHAMPURSUG.NS", "NATCOPHARM.NS", "GODREJAGRO.NS",
+            "ADVENZYMES.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 10. Financial Services
+    # ─────────────────────────────────────────────
+    "Financial Services": {
+        "description": "Banks, NBFCs, Insurance, AMCs, Brokerages, Exchanges",
+        "stocks": [
+            "POLICYBZR.NS", "PAYTM.NS", "HDFCBANK.NS", "ICICIBANK.NS", "KOTAKBANK.NS",
+            "AXISBANK.NS", "INDUSINDBK.NS", "FEDERALBNK.NS", "IDFCFIRSTB.NS", "BANDHANBNK.NS",
+            "RBLBANK.NS", "AUBANK.NS", "SBIN.NS", "BANKBARODA.NS", "PNB.NS",
+            "CANBK.NS", "UNIONBANK.NS", "IOB.NS", "CENTRALBK.NS", "INDIANB.NS",
+            "IDBI.NS", "MAHABANK.NS", "BAJFINANCE.NS", "BAJAJFINSV.NS", "CHOLAFIN.NS",
+            "SHRIRAMFIN.NS", "M&MFIN.NS", "MUTHOOTFIN.NS", "MANAPPURAM.NS", "POONAWALLA.NS",
+            "FIVESTAR.NS", "CREDITACC.NS", "HDFCLIFE.NS", "SBILIFE.NS", "ICICIPRULI.NS",
+            "ICICIGI.NS", "LICI.NS", "STARHEALTH.NS", "NIACL.NS", "GICRE.NS",
+            "HDFCAMC.NS", "NIPPONIND.NS", "UTIAMC.NS", "KFINTECH.NS", "ANGELONE.NS",
+            "BSE.NS", "CDSL.NS", "MCX.NS", "CRISIL.NS", "MOTILALOFS.NS",
+            "LICHSGFIN.NS", "PNBHOUSING.NS", "CANFINHOME.NS", "AAVAS.NS", "RECLTD.NS",
+            "IRFC.NS", "PFC.NS", "SBICARD.NS", "ABCAPITAL.NS", "SUNDARMFIN.NS",
+            "EQUITASBNK.NS", "UJJIVANSFB.NS", "KARURVYSYA.NS", "CUB.NS", "SOUTHBANK.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 11. Forest Materials
+    # ─────────────────────────────────────────────
+    "Forest Materials": {
+        "description": "Paper, Packaging, Wood Products, Pulp",
+        "stocks": [
+            "GRINDWELL.NS", "CARBORUNIV.NS", "TARSONS.NS", "SUPREMEIND.NS", "ASTRAL.NS",
+            "PRINCEPIPE.NS", "APOLLOPIPE.NS", "SUPRPIPES.NS", "CENTURYPLY.NS", "GREENPLY.NS",
+            "HIL.NS", "GPIL.NS", "NILKAMAL.NS", "HINDPAPER.NS", "TNPL.NS",
+            "STARPAPER.NS", "JKPAPER.NS", "WSTCSTPAPR.NS", "EPL.NS", "HUHTAMAKI.NS",
+            "MOLD-TEK.NS", "ESTER.NS", "COSMOFILMS.NS", "JINDALPOLY.NS", "EMAMIPAP.NS",
+            "RUCHIRA.NS", "SESHAPAPER.NS", "RITCO.NS", "SATIA.NS", "ORIENTPPR.NS",
+            "BALKRISHNA.NS", "TCPLPACK.NS", "WINPRO.NS", "AGI.NS", "SHAILY.NS",
+            "MONTECARLO.NS", "PSPPROJECT.NS", "VESUVIUS.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 12. Healthcare
+    # ─────────────────────────────────────────────
+    "Healthcare": {
+        "description": "Pharmaceuticals, Hospitals, Diagnostics, API, Medical Devices",
+        "stocks": [
+            "SOLARA.NS", "IOLCP.NS", "LALPATHLAB.NS", "ASTRAZEN.NS", "MAXHEALTH.NS",
+            "BIOCON.NS", "SUNPHARMA.NS", "DRREDDY.NS", "CIPLA.NS", "DIVISLAB.NS",
+            "ZYDUSLIFE.NS", "AUROPHARMA.NS", "LUPIN.NS", "TORNTPHARM.NS", "ALKEM.NS",
+            "APOLLOHOSP.NS", "FORTIS.NS", "MEDANTA.NS", "YATHARTH.NS", "RAINBOW.NS",
+            "METROPOLIS.NS", "THYROCARE.NS", "KRSNAA.NS", "VIJAYA.NS", "GLENMARK.NS",
+            "IPCALAB.NS", "NATCOPHARMA.NS", "LAURUSLABS.NS", "SYNGENE.NS", "MANKIND.NS",
+            "JBCHEPHARM.NS", "GRANULES.NS", "AJANTPHARM.NS", "ERIS.NS", "ABBOTINDIA.NS",
+            "PFIZER.NS", "GLAXO.NS", "SANOFI.NS", "POLYMED.NS", "MEDPLUS.NS",
+            "GLAND.NS", "CONCORD.NS", "SUVENPHAR.NS", "PPLPHARMA.NS", "CAPLIPOINT.NS",
+            "NEULANDLAB.NS", "MARKSANS.NS", "SHILPAMED.NS", "GLORIALAB.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 13. Information Technology
+    # ─────────────────────────────────────────────
+    "Information Technology": {
+        "description": "IT Services, Software Products, BPO, SaaS, Digital Platforms",
+        "stocks": [
+            "DATAPATTNS.NS", "MAPMYINDIA.NS", "NIITLTD.NS", "ROUTE.NS", "RATEGAIN.NS",
+            "HAPPSTMNDS.NS", "LATENTVIEW.NS", "MPHASIS.NS", "CIGNITITEC.NS", "TCS.NS",
+            "INFY.NS", "HCLTECH.NS", "WIPRO.NS", "TECHM.NS", "LTIM.NS",
+            "PERSISTENT.NS", "COFORGE.NS", "LTTS.NS", "TATAELXSI.NS", "KPITTECH.NS",
+            "CYIENT.NS", "ZENSAR.NS", "BIRLASOFT.NS", "INTELLECT.NS", "NEWGEN.NS",
+            "MASTEK.NS", "OFSS.NS", "ECLERX.NS", "TANLA.NS", "AFFLE.NS",
+            "SONATSOFTW.NS", "FIRSTSOURCE.NS", "TATATECH.NS", "3IINFOLTD.NS", "CMSINFO.NS",
+            "NUCLEUS.NS", "QUICKHEAL.NS", "BSOFT.NS", "NETWEB.NS", "SASKEN.NS",
+            "EMUDHRA.NS", "SUBEXLTD.NS", "RAMCOSYS.NS", "INFIBEAM.NS", "SAKSOFT.NS",
+            "AURIONPRO.NS", "HEXAWARE.NS", "MSTCLTD.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 14. Media, Entertainment & Publication
+    # ─────────────────────────────────────────────
+    "Media, Entertainment & Publication": {
+        "description": "Broadcasting, OTT, Film Production, Publishing, Gaming",
+        "stocks": [
+            "ZEEL.NS", "SUNTV.NS", "TV18BRDCST.NS", "NETWORK18.NS", "NDTV.NS",
+            "NAZARA.NS", "SAREGAMA.NS", "HATHWAY.NS", "DEN.NS", "GTPL.NS",
+            "DBCORP.NS", "JAGRAN.NS", "TVTODAY.NS", "BALAJITELE.NS", "SHEMAROO.NS",
+            "TIPSINDLTD.NS", "DISH.NS", "WARNERMEDIA.NS", "MIRAE.NS", "HMVL.NS",
+            "SANDESH.NS", "PRSMJOHNSN.NS", "EROSMEDIA.NS", "UFO.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 15. Metals & Mining
+    # ─────────────────────────────────────────────
     "Metals & Mining": {
-        "description": "Steel, Aluminium, Copper, Mining, Metal Products",
+        "description": "Steel, Aluminium, Copper, Mining, Metal Products, Ferro Alloys",
         "stocks": [
-            # Large-cap
-            "TATASTEEL.NS", "JSWSTEEL.NS", "HINDALCO.NS", "VEDL.NS", "NMDC.NS",
-            "JINDALSTEL.NS", "NATIONALUM.NS", "HINDZINC.NS", "SAIL.NS",
-            # Mid-cap
-            "MOIL.NS", "APLAPOLLO.NS", "RATNAMANI.NS", "WELCORP.NS", "KIOCL.NS",
-            "GRAVITA.NS", "HINDCOPPER.NS",
-            # Extended
-            "MIDHANI.NS", "GODAWARI.NS", "SHYAMMETL.NS", "SARDAEN.NS", "GALLANTT.NS",
-            "JSWHL.NS", "TINPLATE.NS", "RAJRATAN.NS", "MANAKSIA.NS",
-            # Nifty 500 expansion
-            "JSL.NS", "LLOYDSME.NS",
+            "APLAPOLLO.NS", "RATNAMANI.NS", "RAIN.NS", "PENIND.NS", "JSWSTEEL.NS",
+            "WELCORP.NS", "JINDALSAW.NS", "JSPL.NS", "JSWHL.NS", "TATAMETALIK.NS",
+            "TATASTEEL.NS", "HINDALCO.NS", "VEDL.NS", "NMDC.NS", "JINDALSTEL.NS",
+            "NATIONALUM.NS", "HINDZINC.NS", "SAIL.NS", "MOIL.NS", "KIOCL.NS",
+            "GRAVITA.NS", "HINDCOPPER.NS", "MIDHANI.NS", "GODAWARI.NS", "SHYAMMETL.NS",
+            "SARDAEN.NS", "GALLANTT.NS", "TINPLATE.NS", "RAJRATAN.NS", "MANAKSIA.NS",
+            "JSL.NS", "LLOYDSME.NS", "NFASL.NS", "COALINDIA.NS", "MISHRA.NS",
+            "HLEGLAS.NS", "ORIENTREF.NS", "WELBONDGR.NS", "MTARTECH.NS", "SANDUMA.NS",
+            "PRAKASH.NS", "STEELCAS.NS", "KALYANI.NS", "MUKANDLTD.NS", "SHYAMCENT.NS",
+            "UNIPARTS.NS",
         ],
     },
-    "Consumer Discretionary": {
-        "description": "Retail, Lifestyle, Jewellery, QSR, Home & Building Products, Electronics",
+    # ─────────────────────────────────────────────
+    # 16. Oil, Gas & Consumable Fuels
+    # ─────────────────────────────────────────────
+    "Oil, Gas & Consumable Fuels": {
+        "description": "Oil Exploration, Refining, Gas Distribution, Coal",
         "stocks": [
-            # Large-cap
-            "TITAN.NS", "TRENT.NS", "DMART.NS", "JUBLFOOD.NS", "PAGEIND.NS",
-            "VOLTAS.NS", "HAVELLS.NS", "POLYCAB.NS", "DIXON.NS", "ASTRAL.NS",
-            # Mid-cap home & lifestyle
-            "CROMPTON.NS", "WHIRLPOOL.NS", "BLUESTAR.NS", "BATAINDIA.NS", "RELAXO.NS",
-            "RAYMOND.NS", "KAJARIACER.NS", "CERA.NS", "VGUARD.NS", "AMBER.NS",
-            # QSR & food services
-            "DEVYANI.NS", "SAPPHIRE.NS", "WESTLIFE.NS", "ZOMATO.NS",
-            # Fashion & retail
-            "SHOPERSTOP.NS", "NYKAA.NS", "MANYAVAR.NS", "CAMPUS.NS", "METROBRAND.NS",
-            # Electronics & electricals
-            "ORIENTELEC.NS", "SYMPHONY.NS", "IFBIND.NS", "TTKPRESTIG.NS",
-            # Building products
-            "CENTURYPLY.NS", "GREENPLY.NS", "PRINCEPIPE.NS",
-            # Jewellery
-            "KALYANKJIL.NS", "SENCO.NS", "ETHOS.NS",
-            # Travel & leisure
-            "INDIGO.NS", "WONDERLA.NS", "MHRIL.NS",
-            # Luggage & accessories
-            "SAFARI.NS", "VIPIND.NS",
-            # Other consumer
-            "BOROSIL.NS", "CARTRADE.NS", "BLUEDART.NS",
-            # Nifty 500 expansion
-            "INDHOTEL.NS", "DOMS.NS", "BARBEQUE.NS",
+            "RELIANCE.NS", "CASTROLIND.NS", "ONGC.NS", "BPCL.NS", "IOC.NS",
+            "GAIL.NS", "HINDPETRO.NS", "PETRONET.NS", "IGL.NS", "MGL.NS",
+            "GUJGASLTD.NS", "GSPL.NS", "ATGL.NS", "OIL.NS", "MRPL.NS",
+            "CHENNPETRO.NS", "AEGISCHEM.NS", "GULFOILLUB.NS", "GANDHAR.NS", "HEMIPROP.NS",
+            "SUPPETRO.NS", "SELAN.NS", "HINDOILEXP.NS", "HOEC.NS", "DEEPINDS.NS",
+            "CAIRN.NS", "GEL.NS", "JCHAC.NS", "CPCL.NS", "HPCL.NS",
+            "TIDEWATER.NS", "SEAMECLTD.NS", "GULFPETRO.NS", "MAHANAGAR.NS",
         ],
     },
+    # ─────────────────────────────────────────────
+    # 17. Real Estate
+    # ─────────────────────────────────────────────
     "Real Estate": {
         "description": "Real Estate Developers, REITs, Property Management",
         "stocks": [
-            # Large-cap developers
-            "DLF.NS", "GODREJPROP.NS", "OBEROIRLTY.NS", "PRESTIGE.NS", "LODHA.NS",
-            "PHOENIXLTD.NS", "BRIGADE.NS",
-            # Mid-cap developers
-            "SOBHA.NS", "SUNTECK.NS", "MAHLIFE.NS", "KOLTEPATIL.NS",
-            "ANANTRAJ.NS", "PURVA.NS",
-            # Extended
-            "RUSTOMJEE.NS", "SIGNATURE.NS",
-            # REITs
-            "EMBASSY.NS", "MINDSPACE.NS", "BIRET.NS",
+            "MAXESTATES.NS", "AARVINFRA.NS", "MAHLIFE.NS", "DLF.NS", "GODREJPROP.NS",
+            "OBEROIRLTY.NS", "PRESTIGE.NS", "LODHA.NS", "PHOENIXLTD.NS", "BRIGADE.NS",
+            "SOBHA.NS", "SUNTECK.NS", "KOLTEPATIL.NS", "ANANTRAJ.NS", "PURVA.NS",
+            "EMBASSY.NS", "MINDSPACE.NS", "BIRET.NS", "RUSTOMJEE.NS", "SIGNATURE.NS",
+            "KEYSTONE.NS", "SURAJEST.NS", "IBREALEST.NS", "ASHIANA.NS", "SHRIRAMPRP.NS",
+            "AHLUCONT.NS", "ARIHANT.NS", "ELDEHSG.NS", "MAHINDLIFE.NS",
         ],
     },
-    "Textiles & Apparel": {
-        "description": "Textiles, Garments, Home Furnishings, Innerwear",
+    # ─────────────────────────────────────────────
+    # 18. Retailing
+    # ─────────────────────────────────────────────
+    "Retailing": {
+        "description": "Brick & Mortar Retail, E-commerce, Fashion Retail, Grocery",
         "stocks": [
-            # Home textiles
-            "TRIDENT.NS", "WELSPUNLIV.NS", "HIMATSEIDE.NS",
-            # Fabrics & yarn
-            "ARVIND.NS", "VTL.NS", "KPRMILL.NS",
-            # Garment exports
-            "GOKALDAS.NS", "KITEX.NS",
-            # Innerwear & hosiery
-            "LUXIND.NS", "DOLLAR.NS", "RUPA.NS",
-            # Branded apparel
-            "TCNSBRANDS.NS",
+            "KALYANKJIL.NS", "SENCO.NS", "ETHOS.NS", "METROBRAND.NS", "SHOPERSTOP.NS",
+            "TRENT.NS", "DMART.NS", "NYKAA.NS", "KHADIM.NS", "GLOBUSSPR.NS",
+            "SWIGGY.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 19. Services
+    # ─────────────────────────────────────────────
+    "Services": {
+        "description": "Professional Services, Staffing, BPO, Consulting, Engineering Services",
+        "stocks": [
+            "BLUEDART.NS", "DELHIVERY.NS", "ALLCARGO.NS", "TCI.NS", "QUESS.NS",
+            "TEAMLEASE.NS", "SIS.NS", "ICRA.NS", "CARERATING.NS", "BLS.NS",
+            "CONCOR.NS", "BOROLTD.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 20. Telecommunication
+    # ─────────────────────────────────────────────
+    "Telecommunication": {
+        "description": "Telecom Operators, Tower Companies, Telecom Infrastructure",
+        "stocks": [
+            "RAILTEL.NS", "VINDHYATEL.NS", "PARACABLES.NS", "NELCO.NS", "GTLINFRA.NS",
+            "BHARTIARTL.NS", "IDEA.NS", "TTML.NS", "INDUSTOWER.NS", "TATACOMM.NS",
+            "HFCL.NS", "STERLITE.NS", "GTL.NS", "TEJAS.NS", "ONMOBILE.NS",
+            "XLERATE.NS", "CENTUM.NS", "NELCAST.NS", "ITI.NS", "MTNL.NS",
+            "BSNL.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 21. Textiles
+    # ─────────────────────────────────────────────
+    "Textiles": {
+        "description": "Textiles, Garments, Home Furnishings, Innerwear, Fabrics",
+        "stocks": [
+            "CENTURYTEX.NS", "TRIDENT.NS", "MIRZAINT.NS", "ARVIND.NS", "WELSPUNLIV.NS",
+            "HIMATSEIDE.NS", "VTL.NS", "KPRMILL.NS", "GOKALDAS.NS", "KITEX.NS",
+            "LUXIND.NS", "DOLLAR.NS", "RUPA.NS", "TCNSBRANDS.NS", "SSWL.NS",
+            "SUTLEJ.NS", "DONEAR.NS", "SPENTEX.NS", "BANSWRAS.NS", "HIRECT.NS",
+            "VARDHACRLC.NS", "GRAUER.NS", "NANDAN.NS", "NAHAR.NS", "SURYALAXMI.NS",
+            "GARFIBRES.NS", "SUPER.NS", "SINTEX.NS", "METRO.NS", "VMART.NS",
+            "INDORAMA.NS", "FILATEX.NS", "RAJTV.NS",
+        ],
+    },
+    # ─────────────────────────────────────────────
+    # 22. Utilities
+    # ─────────────────────────────────────────────
+    "Utilities": {
+        "description": "Power Generation, Transmission, Distribution, Renewables, Water",
+        "stocks": [
+            "SUZLON.NS", "ADANIPOWER.NS", "NTPC.NS", "POWERGRID.NS", "TATAPOWER.NS",
+            "NHPC.NS", "JSWENERGY.NS", "SJVN.NS", "TORNTPOWER.NS", "CESC.NS",
+            "ADANIGREEN.NS", "INOXWIND.NS", "WAAREE.NS", "KPIGREEN.NS", "GIPCL.NS",
+            "IREDA.NS", "POWERMECH.NS", "RPOWER.NS", "JPPOWER.NS", "VABIOTECH.NS",
+            "IEX.NS", "NLCINDIA.NS", "KALPATPOWR.NS", "GENUS.NS", "HPL.NS",
         ],
     },
 }

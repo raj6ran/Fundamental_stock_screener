@@ -22,7 +22,7 @@ Stocks/
 │   │   └── python-screener.instructions.md  # Python code style rules
 │   └── skills/
 │       └── equity-research/SKILL.md  # Stock analysis skill
-├── config.py           # All thresholds, FILTER_REFERENCE, 13 sectors, ~510 stocks
+├── config.py           # All thresholds, FILTER_REFERENCE, 22 sectors, ~730 stocks
 ├── data_fetcher.py     # yfinance data retrieval, 3-tier accuracy, Piotroski, Altman Z
 ├── analyzer.py         # 10-dimension scoring engine, Graham Number, DCF, reverse DCF, moat, Magic Formula
 ├── screener.py         # Main CLI — runs sectors, generates HTML report
@@ -78,9 +78,9 @@ Combined rank of Earnings Yield + ROIC. Cross-check, not a scoring input.
 
 ## Coverage
 
-- **13 sectors, ~510 stocks** across NSE India
-- Sectors: IT, Pharma & Healthcare, Banking & Finance, FMCG, Auto & Ancillaries, Infrastructure & Capital Goods, Energy & Power, Chemicals & Materials, Telecom & Media, Metals & Mining, Consumer Discretionary, Real Estate, Textiles & Apparel
-- Cyclical sectors: Metals & Mining, Energy & Power, Auto & Ancillaries, Real Estate
+- **22 sectors, ~730 unique stocks** across NSE India (official NSE classification, deduplicated)
+- Sectors: Automobile and Auto Components, Capital Goods, Chemicals, Construction Materials, Consumer Durables, Consumer Services, Diversified, Fast Moving Consumer Goods, Fertilizers & Agrochemicals, Financial Services, Forest Materials, Healthcare, Information Technology, Media Entertainment & Publication, Metals & Mining, Oil Gas & Consumable Fuels, Real Estate, Retailing, Services, Telecommunication, Textiles, Utilities
+- Cyclical sectors: Metals & Mining, Oil Gas & Consumable Fuels, Automobile and Auto Components, Real Estate, Construction Materials, Fertilizers & Agrochemicals
 - Each sector has PE/PB norms, moat hints, tailwind/threat/diversification scores
 
 ## How to Run
@@ -90,7 +90,7 @@ Combined rank of Earnings Yield + ROIC. Cross-check, not a scoring input.
 python screener.py
 
 # Single sector
-python screener.py --sector "Pharma & Healthcare"
+python screener.py --sector "Healthcare"
 ```
 
 ## When Asked to Analyse a Stock
@@ -113,7 +113,7 @@ python screener.py --sector "Pharma & Healthcare"
 2. Add sector norms in ALL 6 norm dicts: `SECTOR_PE_NORMS`, `SECTOR_PB_NORMS`, `SECTOR_MOAT_HINTS`, `SECTOR_TAILWINDS`, `SECTOR_DIVERSIFICATION`, `SECTOR_THREATS`
 3. If cyclical, add to `CYCLICAL_SECTORS`
 4. Use the same ticker format: `SYMBOL.NS` for NSE, `SYMBOL.TO` for TSX
-5. Check for duplicate tickers across sectors (each stock should appear in exactly one sector)
+5. NSE currently uses official 22-sector classification (~730 unique stocks total, no cross-sector duplicates)
 6. Run `python screener.py --sector "New Sector"` to test
 
 ## Code Conventions

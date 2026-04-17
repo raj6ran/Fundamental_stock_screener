@@ -59,8 +59,13 @@ def run_screener(sectors: dict, selected_sector: str | None = None, slow: bool =
 
     all_data = pd.concat(all_dfs, ignore_index=True)
 
-    # Sort final
-    all_data = all_data.sort_values("total_score", ascending=False).reset_index(drop=True)
+    # Deduplicate: keep the highest-scoring entry when a stock appears in multiple sectors
+    all_data = all_data.sort_values("total_score", ascending=False)
+    before = len(all_data)
+    all_data = all_data.drop_duplicates(subset="ticker", keep="first").reset_index(drop=True)
+    duped = before - len(all_data)
+    if duped:
+        print(f"    (Removed {duped} duplicate ticker entries, kept highest score)")
 
     # Console summary
     total = len(all_data)
