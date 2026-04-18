@@ -327,79 +327,93 @@ function sortTable(tableId, colIdx, numeric, evt) {
 
 
 # ═══════════════════════════════════════════════
-# Fund Manager Picks — Qualitative Overlay
+# Investment Frameworks — Published & Verifiable
 # ═══════════════════════════════════════════════
+# Every framework below has an auditable source:
+# a published book, academic paper, or annual study.
+# No speculative criteria. No internet commentary.
 
-FUND_MANAGERS = [
+FRAMEWORKS = [
     {
-        "name": "Sankaran Naren",
-        "firm": "ICICI Prudential AMC",
-        "strategy": "Contrarian Value",
-        "philosophy": "Buys beaten-down sectors and out-of-favour large caps at deep discounts. Rotates into cyclicals at trough valuations. Mean-reversion thesis.",
+        "name": "Graham Value",
+        "author": "Benjamin Graham",
+        "source": "The Intelligent Investor (1949), Security Analysis (1934)",
+        "criteria": "PE < 15, PB < 1.5, PE×PB < 22.5, current ratio > 2, D/E < 0.5, positive earnings, margin of safety > 0",
+        "verdict": "PASS/FAIL",
     },
     {
-        "name": "Raamdeo Agrawal",
-        "firm": "Motilal Oswal",
-        "strategy": "QGLP",
-        "philosophy": "Quality-Growth-Longevity-Price. Seeks 100-baggers: consistent ROE > 20%, earnings CAGR > 15%, wide moat, at reasonable PE.",
+        "name": "Piotroski F-Score",
+        "author": "Joseph Piotroski",
+        "source": "Journal of Accounting Research (2000) — 'Value Investing: The Use of Historical Financial Statement Information'",
+        "criteria": "9 binary tests: ROA > 0, ΔROA > 0, OCF > 0, OCF > NI, ΔLeverage < 0, ΔCurrent Ratio > 0, no dilution, ΔGross Margin > 0, ΔAsset Turnover > 0",
+        "verdict": "STRONG (7-9) / MODERATE (4-6) / WEAK (0-3)",
     },
     {
-        "name": "Rajeev Thakkar",
-        "firm": "PPFAS Mutual Fund",
-        "strategy": "GARP + Cash Flow",
-        "philosophy": "Cash-flow obsessed GARP investor. OCF must back reported earnings. Low churn, high conviction, avoids fads and IPO frenzies.",
+        "name": "Altman Z-Score",
+        "author": "Edward Altman",
+        "source": "Journal of Finance (1968) — 'Financial Ratios, Discriminant Analysis and the Prediction of Corporate Bankruptcy'",
+        "criteria": "Z = 1.2(WC/TA) + 1.4(RE/TA) + 3.3(EBIT/TA) + 0.6(MCap/TL) + Rev/TA",
+        "verdict": "SAFE (>2.99) / GREY (1.81–2.99) / DISTRESS (<1.81)",
     },
     {
-        "name": "Bharat Shah",
-        "firm": "ASK Investment Managers",
-        "strategy": "Quality Compounder",
-        "philosophy": "Only extraordinary businesses. ROCE > 20% sustained for decades, pricing power as the ultimate moat, near-zero debt. Never sell a great company.",
+        "name": "Magic Formula",
+        "author": "Joel Greenblatt",
+        "source": "The Little Book That Beats the Market (2005)",
+        "criteria": "Combined rank of Earnings Yield (EBIT/EV) + ROIC (EBIT/Capital Employed). Lower combined rank = better",
+        "verdict": "TOP DECILE / TOP QUARTILE / BOTTOM",
     },
     {
-        "name": "Saurabh Mukherjea",
-        "firm": "Marcellus Investment",
-        "strategy": "Coffee Can / Consistent Compounders",
-        "philosophy": "Buy and forget for 10 years. Revenue CAGR ≥ 10%, ROCE ≥ 15%, D/E ≤ 1.0. Clean governance, minimal capital needs.",
+        "name": "Coffee Can",
+        "author": "Saurabh Mukherjea",
+        "source": "Coffee Can Investing (2018, Penguin)",
+        "criteria": "Revenue CAGR ≥ 10%, ROCE ≥ 15%, D/E ≤ 1.0. Hold 10 years, no churn",
+        "verdict": "ELIGIBLE / NOT ELIGIBLE",
     },
     {
-        "name": "Prashant Jain",
-        "firm": "3P Investment Managers",
-        "strategy": "Growth at Reasonable Price",
-        "philosophy": "Patient growth investor. Buys visible earnings growth > 12% at PE below sector median. Concentrated, long holding periods.",
+        "name": "QGLP",
+        "author": "Raamdeo Agrawal",
+        "source": "Motilal Oswal Wealth Creation Study (annual, 1996–present)",
+        "criteria": "Quality: ROCE ≥ 15%, ROE ≥ 15%. Growth: earnings CAGR ≥ 15%. Longevity: durable moat, non-eroding. Price: PE ≤ 1.5× sector norm",
+        "verdict": "Q✓ G✓ L✓ P✓ = PASS / else = FAIL subset",
     },
     {
-        "name": "Nilesh Shah",
-        "firm": "Kotak AMC",
-        "strategy": "Balanced Quality",
-        "philosophy": "Balanced scorecard approach — no single dimension should be weak. Moderate ROCE, low debt, decent growth, institutional backing.",
+        "name": "Lynch PEG",
+        "author": "Peter Lynch",
+        "source": "One Up on Wall Street (1989), Beating the Street (1993)",
+        "criteria": "PEG < 1.0 ideal, < 1.5 acceptable. Revenue growing, low debt, positive cash flow",
+        "verdict": "BARGAIN (PEG<1) / FAIR (1–1.5) / OVERPRICED (>1.5)",
     },
     {
-        "name": "Madhusudan Kela",
-        "firm": "MK Ventures",
-        "strategy": "Growth Momentum",
-        "philosophy": "Backs high-growth companies in secular trends. Revenue/profit CAGR > 15%, strong moat, willing to pay premium for growth visibility.",
+        "name": "Buffett Moat",
+        "author": "Warren Buffett",
+        "source": "Berkshire Hathaway Annual Letters (1957–present)",
+        "criteria": "Consistent ROE ≥ 15% (10yr), durable competitive advantage, owner earnings positive, low debt, high FCF conversion, competent capital allocation",
+        "verdict": "FRANCHISE / GOOD BUSINESS / AVOID",
     },
     {
-        "name": "Kenneth Andrade",
-        "firm": "Old Bridge Capital",
-        "strategy": "Capital Cycle / Earnings Recovery",
-        "philosophy": "Invests in capex-cycle recoveries and earnings turnarounds. Contrarian on cyclicals, looks for improving ROCE and sector upcycles.",
+        "name": "Dorsey Moat",
+        "author": "Pat Dorsey",
+        "source": "The Little Book That Builds Wealth (2008) — Morningstar Director of Equity Research",
+        "criteria": "5 moat sources: cost advantage, switching costs, network effects, intangible assets, efficient scale. ROIC > WACC consistently. Moat trend: widening/stable/eroding",
+        "verdict": "WIDE / NARROW / NONE + trend direction",
     },
     {
-        "name": "Anand Srinivasan",
-        "firm": "Independent Investor",
-        "strategy": "Cash Flow + PEG",
-        "philosophy": "PEG < 1.5, positive FCF, pricing power. Focuses on consistent compounders with cash-backed earnings and operating leverage.",
+        "name": "DCF Intrinsic Value",
+        "author": "Aswath Damodaran",
+        "source": "Investment Valuation (Wiley, multiple editions), NYU Stern published models",
+        "criteria": "10yr DCF with company-specific CAGR, 12% discount rate, 3% terminal growth. Reverse DCF to check market-implied growth. Margin of Safety = (Intrinsic − Price) / Intrinsic",
+        "verdict": "UNDERVALUED (MoS > 15%) / FAIR (±15%) / OVERVALUED (MoS < −15%)",
     },
 ]
 
 
-def _match_fund_managers(row) -> list[dict]:
-    """Match a stock row against fund manager criteria. Returns list of picks."""
+def _match_frameworks(row) -> list[dict]:
+    """Match a stock row against 10 published investment frameworks.
+    Returns list of dicts with framework_idx, result, reasons, status."""
     picks = []
     score = row.get("total_score", 0)
-    verdict = row.get("verdict", "REJECT")
     pe = row.get("pe")
+    pb = row.get("pb")
     roce = row.get("roce_pct")
     roe = row.get("roe_pct")
     de = row.get("debt_to_equity")
@@ -417,282 +431,308 @@ def _match_fund_managers(row) -> list[dict]:
     mos_d = row.get("dcf_margin_of_safety_pct")
     peg = row.get("peg")
     op_margin = row.get("operating_margin_pct")
-    val_score = row.get("valuation_score", 0)
-    prof_score = row.get("profitability_score", 0)
-    growth_score = row.get("growth_score", 0)
-    health_score = row.get("financial_health_score", 0)
-    cashflow_score = row.get("cash_flow_score", 0)
-    eq_score = row.get("earnings_quality_score", 0)
-    mgmt_score = row.get("management_score", 0)
     incr_roce = row.get("incremental_roce")
     altman_z = row.get("altman_z")
+    current_ratio = row.get("current_ratio")
+    magic_rank = row.get("magic_formula_rank")
+    magic_pct = row.get("magic_formula_percentile")
+    eps = row.get("eps")
+    bvps = row.get("book_value")
 
     v = _is_valid_number
-
-    # PE norm for sector
     pe_norm = SECTOR_PE_NORMS.get(sector, {}).get("avg", 25)
-    pe_cheap = SECTOR_PE_NORMS.get(sector, {}).get("cheap", 15)
-    is_cyclical = sector in CYCLICAL_SECTORS
 
-    # ── 1. Sankaran Naren — Contrarian Value ──
-    # Cheap PE (below sector cheap threshold), positive MoS, any ROCE
-    naren_match = False
-    naren_reasons = []
-    if v(pe) and pe < pe_cheap:
-        naren_reasons.append(f"PE {pe:.1f} below sector cheap ({pe_cheap})")
-        naren_match = True
-    if v(mos_g) and mos_g > 15:
-        naren_reasons.append(f"Graham MoS +{mos_g:.0f}%")
-        naren_match = True
-    if v(mos_d) and mos_d > 15:
-        naren_reasons.append(f"DCF MoS +{mos_d:.0f}%")
-        naren_match = True
-    if is_cyclical and val_score >= 6:
-        naren_reasons.append(f"Cyclical sector at reasonable valuation")
-        naren_match = True
-    if naren_match and naren_reasons:
-        status = "STRONG BUY" if (v(pe) and pe < pe_cheap and score >= 60) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 0, "reasons": naren_reasons, "status": status})
+    # ── 0. Graham Value ──
+    # Source: The Intelligent Investor, Ch. 14 — defensive investor criteria
+    g_reasons = []
+    g_pe = v(pe) and pe < 15
+    g_pb = v(pb) and pb < 1.5
+    g_pepb = v(pe) and v(pb) and pe * pb < 22.5
+    g_de = v(de) and de < 0.5
+    g_cr = v(current_ratio) and current_ratio > 2
+    g_eps = v(eps) and eps > 0
+    g_mos = v(mos_g) and mos_g > 0
+    if g_pe:
+        g_reasons.append(f"PE {pe:.1f} < 15")
+    if g_pb:
+        g_reasons.append(f"PB {pb:.2f} < 1.5")
+    if g_pepb:
+        g_reasons.append(f"PE×PB = {pe * pb:.1f} < 22.5")
+    if g_de:
+        g_reasons.append(f"D/E {de:.2f} < 0.5")
+    if g_cr:
+        g_reasons.append(f"Current ratio {current_ratio:.2f} > 2")
+    if g_eps:
+        g_reasons.append(f"EPS ₹{eps:.1f} positive")
+    if g_mos:
+        g_reasons.append(f"Graham MoS +{mos_g:.0f}%")
+    passed = sum([g_pe, g_pb or g_pepb, g_de, g_eps, g_mos])
+    if passed >= 3:
+        status = "PASS" if passed >= 4 else "PARTIAL"
+        picks.append({"framework_idx": 0, "reasons": g_reasons, "status": status,
+                       "result": f"{passed}/5 criteria met"})
 
-    # ── 2. Raamdeo Agrawal — QGLP ──
-    qglp_reasons = []
+    # ── 1. Piotroski F-Score ──
+    # Source: Piotroski (2000), 9 binary tests
+    if v(piotroski):
+        p_reasons = [f"F-Score {piotroski:.0f}/9"]
+        if v(ocf_ni) and ocf_ni > 1.0:
+            p_reasons.append(f"OCF/NI {ocf_ni:.2f} — cash-backed")
+        if v(roce) and v(incr_roce):
+            if incr_roce > 0:
+                p_reasons.append(f"Improving ROCE (Δ {incr_roce:.1f}%)")
+        if piotroski >= 7:
+            picks.append({"framework_idx": 1, "reasons": p_reasons, "status": "STRONG",
+                           "result": f"F-Score {piotroski:.0f}/9 — Strong"})
+        elif piotroski >= 4:
+            picks.append({"framework_idx": 1, "reasons": p_reasons, "status": "MODERATE",
+                           "result": f"F-Score {piotroski:.0f}/9 — Moderate"})
+
+    # ── 2. Altman Z-Score ──
+    # Source: Altman (1968), exact formula
+    if v(altman_z):
+        z_reasons = [f"Z-Score {altman_z:.2f}"]
+        if altman_z > 2.99:
+            z_reasons.append("Safe zone — low bankruptcy risk")
+            picks.append({"framework_idx": 2, "reasons": z_reasons, "status": "SAFE",
+                           "result": f"Z = {altman_z:.2f} — Safe"})
+        elif altman_z > 1.81:
+            z_reasons.append("Grey zone — moderate risk, monitor")
+            picks.append({"framework_idx": 2, "reasons": z_reasons, "status": "GREY",
+                           "result": f"Z = {altman_z:.2f} — Grey Zone"})
+        # Distress stocks are flagged but not shown as "picks"
+
+    # ── 3. Magic Formula ──
+    # Source: Greenblatt (2005), combined rank of Earnings Yield + ROIC
+    if v(magic_pct):
+        mf_reasons = [f"Magic Formula percentile: {magic_pct:.0f}%"]
+        if v(roce):
+            mf_reasons.append(f"ROIC proxy (ROCE): {roce:.1f}%")
+        if magic_pct >= 90:
+            picks.append({"framework_idx": 3, "reasons": mf_reasons, "status": "TOP DECILE",
+                           "result": f"Top {100 - magic_pct:.0f}% — Top Decile"})
+        elif magic_pct >= 75:
+            picks.append({"framework_idx": 3, "reasons": mf_reasons, "status": "TOP QUARTILE",
+                           "result": f"Top {100 - magic_pct:.0f}% — Top Quartile"})
+
+    # ── 4. Coffee Can ──
+    # Source: Mukherjea (2018), exact criteria from book
+    cc_reasons = []
+    if v(rev_cagr):
+        cc_reasons.append(f"Rev CAGR {rev_cagr:.1f}% {'≥' if rev_cagr >= 10 else '<'} 10%")
+    if v(roce):
+        cc_reasons.append(f"ROCE {roce:.1f}% {'≥' if roce >= 15 else '<'} 15%")
+    if v(de):
+        cc_reasons.append(f"D/E {de:.2f} {'≤' if de <= 1.0 else '>'} 1.0")
+    if coffee_can:
+        picks.append({"framework_idx": 4, "reasons": cc_reasons, "status": "ELIGIBLE",
+                       "result": "All 3 criteria met — Coffee Can Eligible"})
+
+    # ── 5. QGLP ──
+    # Source: Motilal Oswal Wealth Creation Study (published annually)
     q_ok = v(roce) and roce >= 15 and v(roe) and roe >= 15
     g_ok = (v(rev_cagr) and rev_cagr >= 15) or (v(profit_cagr) and profit_cagr >= 15)
     l_ok = moat in ("Wide", "Narrow") and moat_trend != "eroding"
     p_ok = v(pe) and pe <= pe_norm * 1.5
+    qglp_reasons = []
+    qglp_flags = []
     if q_ok:
-        qglp_reasons.append(f"Quality: ROCE {roce:.1f}%, ROE {roe:.1f}%")
+        qglp_reasons.append(f"Q✓ ROCE {roce:.1f}%, ROE {roe:.1f}%")
+        qglp_flags.append("Q")
     if g_ok:
-        growth_val = rev_cagr if v(rev_cagr) and rev_cagr >= 15 else profit_cagr
-        qglp_reasons.append(f"Growth: {growth_val:.1f}% CAGR")
+        gval = rev_cagr if v(rev_cagr) and rev_cagr >= 15 else profit_cagr
+        qglp_reasons.append(f"G✓ CAGR {gval:.1f}%")
+        qglp_flags.append("G")
     if l_ok:
-        qglp_reasons.append(f"Longevity: {moat} moat, {moat_trend}")
+        qglp_reasons.append(f"L✓ {moat} moat, {moat_trend}")
+        qglp_flags.append("L")
     if p_ok:
-        qglp_reasons.append(f"Price: PE {pe:.1f} vs norm {pe_norm}")
-    if q_ok and g_ok and l_ok:
-        status = "STRONG BUY" if (p_ok and score >= 65) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 1, "reasons": qglp_reasons, "status": status})
+        qglp_reasons.append(f"P✓ PE {pe:.1f} ≤ {pe_norm * 1.5:.0f}")
+        qglp_flags.append("P")
+    if len(qglp_flags) >= 3:
+        tag = "".join(qglp_flags)
+        status = "PASS" if len(qglp_flags) == 4 else "PARTIAL"
+        picks.append({"framework_idx": 5, "reasons": qglp_reasons, "status": status,
+                       "result": f"{tag} ({len(qglp_flags)}/4)"})
 
-    # ── 3. Rajeev Thakkar — GARP + Cash Flow ──
-    thakkar_reasons = []
-    fcf_ok = v(fcf_conv) and fcf_conv > 0.6
-    ocf_ok = v(ocf_ni) and ocf_ni > 0.8
-    piot_ok = v(piotroski) and piotroski >= 5
-    val_ok = v(pe) and pe <= pe_norm * 1.2
-    if fcf_ok:
-        thakkar_reasons.append(f"FCF conversion {fcf_conv:.2f}")
-    if ocf_ok:
-        thakkar_reasons.append(f"OCF/NI {ocf_ni:.2f} — earnings cash-backed")
-    if piot_ok:
-        thakkar_reasons.append(f"Piotroski {piotroski:.0f}/9")
-    if val_ok:
-        thakkar_reasons.append(f"PE {pe:.1f} ≤ sector norm")
-    if (fcf_ok or ocf_ok) and piot_ok:
-        status = "STRONG BUY" if (fcf_ok and ocf_ok and val_ok and score >= 65) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 2, "reasons": thakkar_reasons, "status": status})
-
-    # ── 4. Bharat Shah — Quality Compounder ──
-    bharat_reasons = []
-    roce_high = v(roce) and roce >= 20
-    moat_wide = moat == "Wide"
-    debt_low = v(de) and de < 0.5
-    if roce_high:
-        bharat_reasons.append(f"ROCE {roce:.1f}% — compounding machine")
-    if moat_wide:
-        bharat_reasons.append(f"Wide moat ({moat_trend})")
-    if debt_low:
-        bharat_reasons.append(f"D/E {de:.2f} — near-zero leverage")
-    if v(op_margin) and op_margin >= 20:
-        bharat_reasons.append(f"Operating margin {op_margin:.1f}% — pricing power")
-    if roce_high and (moat_wide or moat_score >= 6):
-        status = "STRONG BUY" if (debt_low and score >= 65) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 3, "reasons": bharat_reasons, "status": status})
-
-    # ── 5. Saurabh Mukherjea — Coffee Can ──
-    if coffee_can:
-        cc_reasons = []
+    # ── 6. Lynch PEG ──
+    # Source: One Up on Wall Street (1989), Beating the Street (1993)
+    if v(peg) and peg > 0:
+        lynch_reasons = [f"PEG {peg:.2f}"]
         if v(rev_cagr):
-            cc_reasons.append(f"Rev CAGR {rev_cagr:.1f}% ≥ 10%")
+            lynch_reasons.append(f"Rev CAGR {rev_cagr:.1f}%")
+        if v(de) and de < 1.0:
+            lynch_reasons.append(f"D/E {de:.2f} — low debt")
+        if v(fcf_conv) and fcf_conv > 0.5:
+            lynch_reasons.append(f"FCF conversion {fcf_conv:.2f}")
+        if peg < 1.0:
+            picks.append({"framework_idx": 6, "reasons": lynch_reasons, "status": "BARGAIN",
+                           "result": f"PEG {peg:.2f} < 1.0 — Bargain"})
+        elif peg < 1.5:
+            picks.append({"framework_idx": 6, "reasons": lynch_reasons, "status": "FAIR",
+                           "result": f"PEG {peg:.2f} < 1.5 — Fair Value"})
+
+    # ── 7. Buffett Moat ──
+    # Source: Berkshire Hathaway Annual Letters — consistent ROE, moat, owner earnings
+    buff_reasons = []
+    b_roe = v(roe) and roe >= 15
+    b_moat = moat in ("Wide", "Narrow") and moat_trend != "eroding"
+    b_de = v(de) and de < 1.0
+    b_fcf = v(fcf_conv) and fcf_conv > 0.8
+    b_ocf = v(ocf_ni) and ocf_ni > 0.8
+    if b_roe:
+        buff_reasons.append(f"ROE {roe:.1f}% ≥ 15% — consistent returns")
+    if b_moat:
+        buff_reasons.append(f"{moat} moat ({moat_trend}) — durable advantage")
+    if b_de:
+        buff_reasons.append(f"D/E {de:.2f} — conservative leverage")
+    if b_fcf:
+        buff_reasons.append(f"FCF conversion {fcf_conv:.2f} — owner earnings")
+    if b_ocf:
+        buff_reasons.append(f"OCF/NI {ocf_ni:.2f} — cash-backed")
+    passed_b = sum([b_roe, b_moat, b_de, b_fcf or b_ocf])
+    if passed_b >= 3:
+        status = "FRANCHISE" if passed_b == 4 else "GOOD BUSINESS"
+        picks.append({"framework_idx": 7, "reasons": buff_reasons, "status": status,
+                       "result": f"{passed_b}/4 Buffett criteria"})
+
+    # ── 8. Dorsey Moat ──
+    # Source: The Little Book That Builds Wealth (2008)
+    if moat in ("Wide", "Narrow"):
+        d_reasons = [f"Moat: {moat}", f"Trend: {moat_trend}"]
+        if v(moat_score):
+            d_reasons.append(f"Moat score: {moat_score:.0f}/10")
         if v(roce):
-            cc_reasons.append(f"ROCE {roce:.1f}% ≥ 15%")
-        if v(de):
-            cc_reasons.append(f"D/E {de:.2f} ≤ 1.0")
-        status = "STRONG BUY" if score >= 65 else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 4, "reasons": cc_reasons, "status": status})
+            d_reasons.append(f"ROCE {roce:.1f}% — ROIC proxy")
+        status = "WIDE" if moat == "Wide" else "NARROW"
+        trend_tag = " ↑" if moat_trend == "widening" else " →" if moat_trend == "stable" else " ↓"
+        picks.append({"framework_idx": 8, "reasons": d_reasons, "status": status,
+                       "result": f"{moat} Moat{trend_tag}"})
 
-    # ── 6. Prashant Jain — Growth at Reasonable Price ──
-    pj_reasons = []
-    growth_ok = v(rev_cagr) and rev_cagr >= 12
-    roe_ok = v(roe) and roe >= 12
-    pe_reasonable = v(pe) and pe <= pe_norm
-    if growth_ok:
-        pj_reasons.append(f"Rev CAGR {rev_cagr:.1f}%")
-    if roe_ok:
-        pj_reasons.append(f"ROE {roe:.1f}%")
-    if pe_reasonable:
-        pj_reasons.append(f"PE {pe:.1f} ≤ sector avg {pe_norm}")
-    if growth_ok and roe_ok and pe_reasonable:
-        status = "STRONG BUY" if score >= 65 else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 5, "reasons": pj_reasons, "status": status})
-
-    # ── 7. Nilesh Shah — Balanced Quality ──
-    dims = [val_score, prof_score, growth_score, health_score, cashflow_score,
-            row.get("moat_score", 0), eq_score, mgmt_score]
-    min_dim = min(d for d in dims if v(d)) if any(v(d) for d in dims) else 0
-    balanced = min_dim >= 4 and v(roce) and roce >= 12
-    if balanced:
-        ns_reasons = [f"Balanced: min dimension {min_dim:.1f}/10"]
-        if v(roce):
-            ns_reasons.append(f"ROCE {roce:.1f}%")
-        if v(de) and de < 1.5:
-            ns_reasons.append(f"D/E {de:.2f}")
-        status = "STRONG BUY" if (min_dim >= 5 and score >= 65) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 6, "reasons": ns_reasons, "status": status})
-
-    # ── 8. Madhusudan Kela — Growth Momentum ──
-    kela_reasons = []
-    high_growth = (v(rev_cagr) and rev_cagr >= 15) or (v(profit_cagr) and profit_cagr >= 15)
-    strong_moat = moat in ("Wide", "Narrow")
-    if high_growth and strong_moat:
-        if v(rev_cagr) and rev_cagr >= 15:
-            kela_reasons.append(f"Rev CAGR {rev_cagr:.1f}%")
-        if v(profit_cagr) and profit_cagr >= 15:
-            kela_reasons.append(f"Profit CAGR {profit_cagr:.1f}%")
-        kela_reasons.append(f"{moat} moat — sustainable growth")
-        status = "STRONG BUY" if score >= 70 else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 7, "reasons": kela_reasons, "status": status})
-
-    # ── 9. Kenneth Andrade — Capital Cycle / Earnings Recovery ──
-    ka_reasons = []
-    recovery = moat_trend == "widening" or (v(incr_roce) and incr_roce > 15)
-    cyclical_cheap = is_cyclical and v(pe) and pe < pe_cheap * 1.2
-    if recovery and (is_cyclical or val_score >= 6):
-        if moat_trend == "widening":
-            ka_reasons.append("Moat widening — earnings improving")
-        if v(incr_roce) and incr_roce > 15:
-            ka_reasons.append(f"Incremental ROCE {incr_roce:.1f}%")
-        if cyclical_cheap:
-            ka_reasons.append(f"Cyclical PE {pe:.1f} near trough")
-        if v(altman_z) and altman_z > 1.81:
-            ka_reasons.append(f"Altman Z {altman_z:.2f} — no distress")
-        status = "STRONG BUY" if score >= 65 else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 8, "reasons": ka_reasons, "status": status})
-
-    # ── 10. Anand Srinivasan — Cash Flow + PEG ──
-    as_reasons = []
-    peg_ok = v(peg) and 0 < peg < 1.5
-    fcf_pos = v(fcf_conv) and fcf_conv > 0.5
-    margin_ok = v(op_margin) and op_margin >= 15
-    rev_ok = v(rev_cagr) and rev_cagr >= 10
-    if (peg_ok or (fcf_pos and margin_ok)) and rev_ok:
-        if peg_ok:
-            as_reasons.append(f"PEG {peg:.2f} < 1.5")
-        if fcf_pos:
-            as_reasons.append(f"FCF conversion {fcf_conv:.2f}")
-        if margin_ok:
-            as_reasons.append(f"Op. margin {op_margin:.1f}% — pricing power")
-        if rev_ok:
-            as_reasons.append(f"Rev CAGR {rev_cagr:.1f}%")
-        status = "STRONG BUY" if (peg_ok and fcf_pos and score >= 65) else "BUY" if score >= 55 else "HOLD"
-        picks.append({"manager_idx": 9, "reasons": as_reasons, "status": status})
+    # ── 9. DCF Intrinsic Value ──
+    # Source: Damodaran, Investment Valuation (Wiley)
+    dcf_reasons = []
+    has_dcf = v(mos_d)
+    has_graham = v(mos_g)
+    if has_graham:
+        dcf_reasons.append(f"Graham MoS: {'+' if mos_g > 0 else ''}{mos_g:.0f}%")
+    if has_dcf:
+        dcf_reasons.append(f"DCF MoS: {'+' if mos_d > 0 else ''}{mos_d:.0f}%")
+    best_mos = mos_d if has_dcf else mos_g if has_graham else None
+    if v(best_mos):
+        if best_mos > 15:
+            picks.append({"framework_idx": 9, "reasons": dcf_reasons, "status": "UNDERVALUED",
+                           "result": f"MoS +{best_mos:.0f}% — Undervalued"})
+        elif best_mos > -15:
+            picks.append({"framework_idx": 9, "reasons": dcf_reasons, "status": "FAIR VALUE",
+                           "result": f"MoS {best_mos:+.0f}% — Fair Value"})
 
     return picks
 
 
-def _status_badge(status: str) -> str:
-    """Color-coded status badge for fund manager pick."""
+def _framework_badge(status: str) -> str:
+    """Color-coded badge for framework verdict."""
     colors = {
-        "STRONG BUY": ("#00e676", "#1b5e20"),
-        "BUY":        ("#64dd17", "#33691e"),
-        "HOLD":       ("#ffab00", "#4e3a00"),
-        "WATCH":      ("#ff9100", "#4e2600"),
+        # Pass/Eligible
+        "PASS":         ("#00e676", "#1b5e20"),
+        "ELIGIBLE":     ("#00e676", "#1b5e20"),
+        "FRANCHISE":    ("#00e676", "#1b5e20"),
+        "WIDE":         ("#00e676", "#1b5e20"),
+        "STRONG":       ("#00e676", "#1b5e20"),
+        "SAFE":         ("#00e676", "#1b5e20"),
+        "TOP DECILE":   ("#00e676", "#1b5e20"),
+        "BARGAIN":      ("#00e676", "#1b5e20"),
+        "UNDERVALUED":  ("#00e676", "#1b5e20"),
+        # Partial/Moderate
+        "PARTIAL":      ("#64dd17", "#33691e"),
+        "MODERATE":     ("#64dd17", "#33691e"),
+        "GOOD BUSINESS": ("#64dd17", "#33691e"),
+        "NARROW":       ("#64dd17", "#33691e"),
+        "GREY":         ("#ffab00", "#4e3a00"),
+        "TOP QUARTILE": ("#64dd17", "#33691e"),
+        "FAIR":         ("#ffab00", "#4e3a00"),
+        "FAIR VALUE":   ("#ffab00", "#4e3a00"),
     }
     fg, bg = colors.get(status, ("#aaa", "#333"))
     return f'<span class="badge" style="background:{bg};color:{fg};border:1px solid {fg}">{escape(status)}</span>'
 
 
-def _fund_manager_picks_html(df) -> str:
-    """Build the Fund Manager Picks tab content."""
-    # Only consider GEM, STRONG, ACCEPTABLE stocks
+def _frameworks_html(df) -> str:
+    """Build the Investment Frameworks tab content."""
     qualified = df[df["verdict"].isin(["GEM", "STRONG", "ACCEPTABLE"])].copy()
 
-    # Collect all picks: (stock_row, manager_info, reasons, status)
     all_picks = []
     for i in range(len(qualified)):
         row = qualified.iloc[i]
-        matches = _match_fund_managers(row)
+        matches = _match_frameworks(row)
         for m in matches:
-            mgr = FUND_MANAGERS[m["manager_idx"]]
+            fw = FRAMEWORKS[m["framework_idx"]]
             all_picks.append({
                 "ticker": row.get("ticker", ""),
                 "name": row.get("name", ""),
                 "sector": row.get("sector", ""),
                 "score": row.get("total_score", 0),
                 "verdict": row.get("verdict", ""),
-                "manager": mgr["name"],
-                "firm": mgr["firm"],
-                "strategy": mgr["strategy"],
+                "framework": fw["name"],
+                "author": fw["author"],
+                "result": m["result"],
                 "reasons": "; ".join(m["reasons"]),
                 "status": m["status"],
             })
 
     if not all_picks:
-        return '<p class="meta">No stocks matched fund manager criteria in this run.</p>'
+        return '<p class="meta">No stocks matched any framework criteria in this run.</p>'
 
     lines = []
 
-    # ── Section 1: Manager philosophy cards ──
-    lines.append('<h3>Fund Manager Strategies</h3>')
-    lines.append('<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;">')
-    for mgr in FUND_MANAGERS:
+    # ── Section 1: Framework reference cards ──
+    lines.append('<h3 style="margin-bottom:4px">Published Investment Frameworks</h3>')
+    lines.append('<p class="meta" style="margin-top:0">Every criterion below is from a published book, academic paper, or annual study. '
+                 'No speculative or internet-derived rules.</p>')
+    lines.append('<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;">')
+    for fw in FRAMEWORKS:
         lines.append('<div class="filter-ref">')
-        lines.append(f'<h4>{escape(mgr["name"])} <span style="color:var(--text2);font-weight:400">— {escape(mgr["firm"])}</span></h4>')
-        lines.append(f'<p><strong>{escape(mgr["strategy"])}</strong></p>')
-        lines.append(f'<p>{escape(mgr["philosophy"])}</p>')
+        lines.append(f'<h4 style="margin-bottom:2px">{escape(fw["name"])}</h4>')
+        lines.append(f'<p style="color:var(--text2);font-size:0.82rem;margin:2px 0">'
+                     f'<strong>{escape(fw["author"])}</strong> — {escape(fw["source"])}</p>')
+        lines.append(f'<p style="font-size:0.85rem;margin:4px 0"><strong>Criteria:</strong> {escape(fw["criteria"])}</p>')
+        lines.append(f'<p style="font-size:0.82rem;margin:2px 0;color:var(--text2)"><strong>Verdict:</strong> {escape(fw["verdict"])}</p>')
         lines.append('</div>')
     lines.append('</div>')
 
-    # ── Section 2: Summary by manager ──
-    lines.append('<h3>Picks by Manager</h3>')
+    # ── Section 2: By-framework sections ──
+    lines.append('<h3 style="margin-top:24px">Results by Framework</h3>')
 
-    # Group picks by manager
     from collections import defaultdict
-    by_manager: dict[str, list] = defaultdict(list)
+    by_framework: dict[str, list] = defaultdict(list)
     for p in all_picks:
-        by_manager[p["manager"]].append(p)
+        by_framework[p["framework"]].append(p)
 
-    # Sort by status priority within each manager
-    status_order = {"STRONG BUY": 0, "BUY": 1, "HOLD": 2, "WATCH": 3}
+    for fw in FRAMEWORKS:
+        fw_name = fw["name"]
+        fw_picks = by_framework.get(fw_name, [])
+        fw_picks.sort(key=lambda p: -p["score"])
+        count = len(fw_picks)
 
-    for mgr in FUND_MANAGERS:
-        mgr_name = mgr["name"]
-        mgr_picks = by_manager.get(mgr_name, [])
-        mgr_picks.sort(key=lambda p: (status_order.get(p["status"], 9), -p["score"]))
-        count = len(mgr_picks)
-        strong_buys = sum(1 for p in mgr_picks if p["status"] == "STRONG BUY")
-        buys = sum(1 for p in mgr_picks if p["status"] == "BUY")
-
-        lines.append(f'<h3 style="margin-top:20px">{escape(mgr_name)} '
+        lines.append(f'<h3 style="margin-top:20px">{escape(fw_name)} '
                      f'<span style="color:var(--text2);font-weight:400">'
-                     f'— {escape(mgr["strategy"])} ({count} picks'
-                     f'{f", {strong_buys} STRONG BUY" if strong_buys else ""}'
-                     f'{f", {buys} BUY" if buys else ""})</span></h3>')
+                     f'— {escape(fw["author"])} ({count} stocks)</span></h3>')
 
-        if not mgr_picks:
-            lines.append('<p class="meta">No qualifying stocks match this strategy in the current screening.</p>')
+        if not fw_picks:
+            lines.append('<p class="meta">No qualifying stocks pass this framework in the current screening.</p>')
             continue
 
-        table_id = f'fm_{mgr_name.replace(" ", "_").lower()}'
+        table_id = f'fw_{fw_name.replace(" ", "_").replace("-", "_").lower()}'
         lines.append(f'<table id="{table_id}">')
         lines.append('<thead><tr>')
-        fm_cols = [("Ticker", False), ("Name", False), ("Sector", False),
-                   ("Score", True), ("Verdict", False), ("Status", False), ("Reasoning", False)]
-        for ci, (label, numeric) in enumerate(fm_cols):
+        fw_cols = [("Ticker", False), ("Name", False), ("Sector", False),
+                   ("Score", True), ("Verdict", False), ("Result", False), ("Status", False), ("Detail", False)]
+        for ci, (label, numeric) in enumerate(fw_cols):
             sort_call = f' onclick="sortTable(\'{table_id}\',{ci},{str(numeric).lower()},event)" style="cursor:pointer"'
             lines.append(f'<th{sort_call}>{label}</th>')
         lines.append('</tr></thead><tbody>')
 
-        for p in mgr_picks:
+        for p in fw_picks:
             t_score = p["score"]
             lines.append('<tr>')
             lines.append(f'<td><a href="#{escape(p["ticker"])}">{escape(p["ticker"])}</a></td>')
@@ -700,47 +740,57 @@ def _fund_manager_picks_html(df) -> str:
             lines.append(f'<td>{escape(p["sector"])}</td>')
             lines.append(f'<td data-val="{t_score}" style="color:{_score_color(t_score, 100)};font-weight:700">{t_score:.1f}</td>')
             lines.append(f'<td>{_verdict_badge(p["verdict"])}</td>')
-            lines.append(f'<td>{_status_badge(p["status"])}</td>')
+            lines.append(f'<td style="font-weight:600;font-size:0.85rem">{escape(p["result"])}</td>')
+            lines.append(f'<td>{_framework_badge(p["status"])}</td>')
             lines.append(f'<td style="font-size:0.8rem;color:var(--text2)">{escape(p["reasons"])}</td>')
             lines.append('</tr>')
 
         lines.append('</tbody></table>')
 
-    # ── Section 3: Master table (all picks, all managers) ──
-    lines.append('<h3 style="margin-top:24px">All Picks — Consolidated View</h3>')
-    lines.append('<p class="meta">Stocks endorsed by multiple managers have stronger conviction. Sort by any column.</p>')
+    # ── Section 3: Consolidated view — frameworks per stock ──
+    lines.append('<h3 style="margin-top:24px">Multi-Framework Consensus</h3>')
+    lines.append('<p class="meta">Stocks passing multiple frameworks carry the highest conviction. '
+                 'A stock passing 7+/10 frameworks is a rare multi-dimensional quality signal.</p>')
 
-    # Count how many managers picked each stock
     from collections import Counter
-    ticker_mgr_count = Counter(p["ticker"] for p in all_picks)
+    ticker_fw_count = Counter(p["ticker"] for p in all_picks)
+    # Deduplicate: one row per ticker+framework
+    seen = set()
+    unique_picks = []
+    for p in all_picks:
+        key = (p["ticker"], p["framework"])
+        if key not in seen:
+            seen.add(key)
+            unique_picks.append(p)
+    ticker_fw_count = Counter(p["ticker"] for p in unique_picks)
 
-    # Sort: most managers first, then by score
-    all_picks_sorted = sorted(all_picks, key=lambda p: (-ticker_mgr_count[p["ticker"]], -p["score"], status_order.get(p["status"], 9)))
+    all_picks_sorted = sorted(unique_picks, key=lambda p: (-ticker_fw_count[p["ticker"]], -p["score"]))
 
-    lines.append('<table id="fm_all">')
+    lines.append('<table id="fw_all">')
     lines.append('<thead><tr>')
     all_cols = [("Stock", False), ("Sector", False), ("Score", True), ("Verdict", False),
-                ("Manager", False), ("Strategy", False), ("Status", False),
-                ("Reasoning", False), ("Mgr Count", True)]
+                ("Framework", False), ("Result", False), ("Status", False),
+                ("Detail", False), ("Fw Count", True)]
     for ci, (label, numeric) in enumerate(all_cols):
-        sort_call = f' onclick="sortTable(\'fm_all\',{ci},{str(numeric).lower()},event)" style="cursor:pointer"'
+        sort_call = f' onclick="sortTable(\'fw_all\',{ci},{str(numeric).lower()},event)" style="cursor:pointer"'
         lines.append(f'<th{sort_call}>{label}</th>')
     lines.append('</tr></thead><tbody>')
 
     for p in all_picks_sorted:
         t_score = p["score"]
-        mc = ticker_mgr_count[p["ticker"]]
-        mc_color = "var(--green)" if mc >= 5 else "var(--accent)" if mc >= 3 else "var(--text2)"
+        fc = ticker_fw_count[p["ticker"]]
+        fc_color = "var(--green)" if fc >= 7 else "var(--accent)" if fc >= 5 else "var(--text2)"
         lines.append('<tr>')
-        lines.append(f'<td><a href="#{escape(p["ticker"])}">{escape(p["ticker"])}</a><br><span style="font-size:0.75rem;color:var(--text2)">{escape(p["name"])}</span></td>')
+        lines.append(f'<td><a href="#{escape(p["ticker"])}">{escape(p["ticker"])}</a><br>'
+                     f'<span style="font-size:0.75rem;color:var(--text2)">{escape(p["name"])}</span></td>')
         lines.append(f'<td>{escape(p["sector"])}</td>')
         lines.append(f'<td data-val="{t_score}" style="color:{_score_color(t_score, 100)};font-weight:700">{t_score:.1f}</td>')
         lines.append(f'<td>{_verdict_badge(p["verdict"])}</td>')
-        lines.append(f'<td style="font-weight:600">{escape(p["manager"])}</td>')
-        lines.append(f'<td style="font-size:0.8rem">{escape(p["strategy"])}</td>')
-        lines.append(f'<td>{_status_badge(p["status"])}</td>')
+        lines.append(f'<td style="font-weight:600;font-size:0.85rem">{escape(p["framework"])}</td>')
+        lines.append(f'<td style="font-size:0.85rem">{escape(p["result"])}</td>')
+        lines.append(f'<td>{_framework_badge(p["status"])}</td>')
         lines.append(f'<td style="font-size:0.78rem;color:var(--text2)">{escape(p["reasons"])}</td>')
-        lines.append(f'<td data-val="{mc}" style="text-align:center;font-weight:700;color:{mc_color}">{mc}</td>')
+        lines.append(f'<td data-val="{fc}" style="text-align:center;font-weight:700;color:{fc_color}">{fc}/10</td>')
         lines.append('</tr>')
 
     lines.append('</tbody></table>')
@@ -1099,7 +1149,7 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
     <div class="tab active" data-tab="tab-dashboard" onclick="showTab('tab-dashboard')">Dashboard</div>
     <div class="tab" data-tab="tab-rankings" onclick="showTab('tab-rankings')">Rankings</div>
     <div class="tab" data-tab="tab-picks" onclick="showTab('tab-picks')">Top Picks</div>
-    <div class="tab" data-tab="tab-managers" onclick="showTab('tab-managers')">Fund Managers</div>
+    <div class="tab" data-tab="tab-managers" onclick="showTab('tab-managers')">Frameworks</div>
     <div class="tab" data-tab="tab-sectors" onclick="showTab('tab-sectors')">By Sector</div>
     <div class="tab" data-tab="tab-allstocks" onclick="showTab('tab-allstocks')">All Stocks</div>
     <div class="tab" data-tab="tab-framework" onclick="showTab('tab-framework')">Framework</div>
@@ -1127,12 +1177,13 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
     html_parts.append(_top_picks_html(df))
     html_parts.append('</div>')
 
-    # ── Tab 4: Fund Managers ──
+    # ── Tab 4: Investment Frameworks ──
     html_parts.append('<div id="tab-managers" class="tab-panel">')
-    html_parts.append('<h2>Fund Manager Picks &mdash; Qualitative Overlay</h2>')
-    html_parts.append('<p class="meta">Top 10 Indian fund managers\' strategies applied to GEM, STRONG &amp; ACCEPTABLE stocks. '
-                     'This is a qualitative lens over the quantitative screener &mdash; stocks endorsed by multiple managers carry higher conviction.</p>')
-    html_parts.append(_fund_manager_picks_html(df))
+    html_parts.append('<h2>Investment Frameworks &mdash; Published &amp; Verifiable</h2>')
+    html_parts.append('<p class="meta">10 published stock-picking frameworks from academic papers, books, and annual studies. '
+                     'Every criterion is auditable &mdash; no speculative or internet-derived rules. '
+                     'Stocks passing 7+/10 frameworks are rare multi-dimensional quality signals.</p>')
+    html_parts.append(_frameworks_html(df))
     html_parts.append('</div>')
 
     # ── Tab 5: By Sector ──

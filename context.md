@@ -307,10 +307,54 @@ Metals & Mining, Oil Gas & Consumable Fuels, Automobile and Auto Components, Rea
 - Goal: cover all NSE sectors with top 50 stocks each for comprehensive gem discovery.
 
 ### HTML Report
-- Dark theme (GitHub-inspired), 6 tabs: Dashboard, Rankings, Top Picks, By Sector, All Stocks, Framework.
+- Dark theme (GitHub-inspired), 7 tabs: Dashboard, Rankings, Top Picks, Frameworks, By Sector, All Stocks, Framework Reference.
 - Multi-column sort on Rankings tab: Click to sort, Shift+Click for secondary/tertiary sorts.
 - Stock cards with all 10 dimension scores, intrinsic value comparisons, moat details, red flags.
 - Sort arrows with priority badges for multi-column sorting.
+
+---
+
+## SIP Portfolio — Core 9 Stocks (April 2026)
+
+Selected via 100-point quantitative screener + 10 published investment frameworks overlay.
+Criteria: GEM/STRONG verdict, 7+/10 framework passes, Wide/Narrow moat, Coffee Can eligible, D/E < 0.35, no cyclicals.
+
+| # | Ticker | Sector | Score | PE | ROCE% | D/E | CAGR% | Moat | Mgrs |
+|---|--------|--------|-------|----|-------|-----|-------|------|------|
+| 1 | BLS.NS | Services | 83.1 | 19.0 | 27.3 | 0.21 | 37.2 | Wide | 10/10 |
+| 2 | NATCOPHARM.NS | Fertilizers & Agrochemicals | 73.8 | 12.9 | 30.0 | 0.04 | 32.3 | Wide | 10/10 |
+| 3 | ZYDUSLIFE.NS | Healthcare | 72.4 | 19.2 | 21.7 | 0.13 | 15.0 | Wide | 10/10 |
+| 4 | EPIGRAL.NS | Chemicals | 71.6 | 15.3 | 21.9 | 0.31 | 17.5 | Narrow | 10/10 |
+| 5 | NEWGEN.NS | Information Technology | 77.0 | 22.9 | 25.2 | 0.04 | 24.1 | Wide | 9/10 |
+| 6 | DODLA.NS | FMCG | 75.5 | 33.6 | 24.2 | 0.03 | 18.4 | Narrow | 9/10 |
+| 7 | GULFOILLUB.NS | Oil, Gas & Consumable Fuels | 74.2 | 13.8 | 31.8 | 0.32 | 18.4 | Wide | 9/10 |
+| 8 | CIGNITITEC.NS | Information Technology | 71.5 | 11.9 | 27.7 | 0.03 | 17.5 | Narrow | 9/10 |
+| 9 | AGI.NS | Forest Materials | 71.3 | 11.4 | 18.5 | 0.26 | 21.4 | Wide | 9/10 |
+
+Portfolio avg: Score 74.3, ROCE 25.4%, D/E 0.13, CAGR 22.4%, Piotroski 7.0/9, 100% Coffee Can.
+See `sip_portfolio.md` for full thesis on each stock.
+
+---
+
+## Investment Frameworks — Published & Verifiable
+
+10 published stock-picking frameworks cross-referenced against screener results in the Frameworks tab.
+Every framework has a verifiable source (book, academic paper, or annual study). No speculative criteria.
+
+| # | Framework | Author | Source | Key Criteria |
+|---|-----------|--------|--------|--------------|
+| 1 | Graham Value | Benjamin Graham | *The Intelligent Investor* (1949) | PE<15, PB<1.5, PE×PB<22.5, D/E<0.5, CR>2, MoS>0 |
+| 2 | Piotroski F-Score | Joseph Piotroski | *Journal of Accounting Research* (2000) | 9 binary tests — STRONG 7-9, MODERATE 4-6 |
+| 3 | Altman Z-Score | Edward Altman | *Journal of Finance* (1968) | Z formula — SAFE >2.99, GREY 1.81-2.99, DISTRESS <1.81 |
+| 4 | Magic Formula | Joel Greenblatt | *The Little Book That Beats the Market* (2005) | Combined rank: Earnings Yield + ROIC |
+| 5 | Coffee Can | Saurabh Mukherjea | *Coffee Can Investing* (2018) | Rev CAGR≥10%, ROCE≥15%, D/E≤1.0 |
+| 6 | QGLP | Raamdeo Agrawal | Motilal Oswal Wealth Creation Study (annual) | Quality✓ Growth✓ Longevity✓ Price✓ |
+| 7 | Lynch PEG | Peter Lynch | *One Up on Wall Street* (1989) | PEG<1.0 BARGAIN, <1.5 FAIR |
+| 8 | Buffett Moat | Warren Buffett | Berkshire Hathaway Annual Letters | ROE≥15%, moat, owner earnings, FCF |
+| 9 | Dorsey Moat | Pat Dorsey | *The Little Book That Builds Wealth* (2008) | 5 moat sources, ROIC>WACC, trend |
+| 10 | DCF Intrinsic Value | Aswath Damodaran | *Investment Valuation* (Wiley) | MoS from Graham/DCF |
+
+Stocks passing 7+/10 frameworks = highest conviction SIP candidates.
 
 ---
 
@@ -324,4 +368,28 @@ Metals & Mining, Oil Gas & Consumable Fuels, Automobile and Auto Components, Rea
 ## Output
 
 - `report.html` — Full HTML report with dashboard, rankings, stock cards, and framework reference
+- `sip_portfolio.md` — Core 9 SIP stocks with full thesis and portfolio characteristics
 - Console output — Per-sector top 3 and final verdict summary
+
+---
+
+## Current Status (April 2026)
+
+### Completed
+- 22 NSE sectors, ~730 stocks fully configured in config.py
+- 10-dimension × 10-point scoring engine with sector-aware thresholds
+- Sector-aware fixes: FINANCIAL_SECTORS, HIGH_LEVERAGE_SECTORS, sector-specific D/E and PE norms
+- 10 published investment frameworks replacing old speculative fund manager overlay
+- 7-tab HTML report: Dashboard, Rankings, Top Picks, Frameworks, By Sector, All Stocks, Framework Reference
+- SIP portfolio: 9 core stocks selected (avg score 74.3, ROCE 25.4%, 100% Coffee Can)
+- IT sector test passed (42 stocks, 1 GEM, 14 STRONG)
+
+### Last Full Run Results (IT sector only)
+- 42 stocks fetched, 6 skipped (yfinance 404)
+- GEM: 1 (NEWGEN), STRONG: 14, ACCEPTABLE: 11, WATCHLIST: 4, REJECT: 12
+
+### Pending / Future
+- Full 22-sector run to regenerate report.html with new frameworks system
+- SIP portfolio framework pass counts need re-validation against new 10-framework system
+- TSX Canada expansion (future)
+- Potential: framework-weighted consensus scoring (weight by source authority)

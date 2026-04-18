@@ -15,6 +15,7 @@ This project is a **fundamental stock screener** for NSE India (future: TSX Cana
 Stocks/
 ├── context.md          # Full project goals, filters, scoring logic, learnings
 ├── claude.md           # THIS FILE — AI agent instructions
+├── sip_portfolio.md    # Core 9 SIP stocks with full thesis and portfolio characteristics
 ├── .instructions.md    # Investment philosophy summary
 ├── .github/
 │   ├── copilot-instructions.md  # VS Code Copilot config
@@ -26,7 +27,7 @@ Stocks/
 ├── data_fetcher.py     # yfinance data retrieval, 3-tier accuracy, Piotroski, Altman Z
 ├── analyzer.py         # 10-dimension scoring engine, Graham Number, DCF, reverse DCF, moat, Magic Formula
 ├── screener.py         # Main CLI — runs sectors, generates HTML report
-├── report_generator.py # Tabbed HTML report: dashboard, rankings, stock cards, framework
+├── report_generator.py # Tabbed HTML report: dashboard, rankings, stock cards, frameworks, framework reference
 ├── requirements.txt    # Python dependencies (yfinance, pandas, numpy)
 └── report.html         # Visual HTML report (auto-generated, ~3.5MB)
 ```
@@ -145,8 +146,45 @@ python screener.py --sector "Healthcare"
 
 ## HTML Report Features
 
-- **6 tabs**: Dashboard, Rankings, Top Picks, By Sector, All Stocks, Framework
+- **7 tabs**: Dashboard, Rankings, Top Picks, **Frameworks**, By Sector, All Stocks, Framework Reference
 - **Multi-column sort**: Click column header to sort, Shift+Click for secondary/tertiary keys
 - **Verdict badges**: Color-coded (green GEM → red REJECT)
 - **Stock cards**: 10 dimension bars, intrinsic value, moat details, red flag badges
 - **Dark theme**: GitHub-inspired (#0d1117 background)
+- **Frameworks tab**: 10 published investment framework cards (each with author & source citation), per-framework pick tables, consolidated view with Fw Count column
+
+## SIP Portfolio (Core 9)
+
+See `sip_portfolio.md` for the full SIP portfolio with thesis on each stock.
+Selected via screener score + 10 published investment frameworks overlay.
+
+| Ticker | Score | Verdict | ROCE% | Moat | Mgrs | Sector |
+|--------|-------|---------|-------|------|------|--------|
+| BLS.NS | 83.1 | GEM | 27.3 | Wide | 10/10 | Services |
+| NATCOPHARM.NS | 73.8 | STRONG | 30.0 | Wide | 10/10 | Fertilizers & Agrochemicals |
+| ZYDUSLIFE.NS | 72.4 | STRONG | 21.7 | Wide | 10/10 | Healthcare |
+| EPIGRAL.NS | 71.6 | STRONG | 21.9 | Narrow | 10/10 | Chemicals |
+| NEWGEN.NS | 77.0 | GEM | 25.2 | Wide | 9/10 | Information Technology |
+| DODLA.NS | 75.5 | GEM | 24.2 | Narrow | 9/10 | FMCG |
+| GULFOILLUB.NS | 74.2 | STRONG | 31.8 | Wide | 9/10 | Oil, Gas & Consumable Fuels |
+| CIGNITITEC.NS | 71.5 | STRONG | 27.7 | Narrow | 9/10 | Information Technology |
+| AGI.NS | 71.3 | STRONG | 18.5 | Wide | 9/10 | Forest Materials |
+
+Portfolio avg: Score 74.3, ROCE 25.4%, D/E 0.13, 100% Coffee Can eligible.
+SIP rule: Equal-weight monthly, rebalance annually, no cyclicals, pause on Red Flag 11.
+
+## Current Status (April 2026)
+
+### What Changed Last
+- Replaced speculative fund manager overlay (16 managers, 13 fabricated) with **10 published investment frameworks**
+- Each framework has verifiable source: book, academic paper, or annual study
+- Frameworks: Graham Value, Piotroski F-Score, Altman Z-Score, Magic Formula, Coffee Can, QGLP, Lynch PEG, Buffett Moat, Dorsey Moat, DCF Intrinsic Value
+- New functions in report_generator.py: `FRAMEWORKS`, `_match_frameworks()`, `_framework_badge()`, `_frameworks_html()`
+- HTML Frameworks tab has 3 sections: reference cards, per-framework tables, multi-framework consensus (Fw Count)
+- All docs updated: context.md, claude.md, sip_portfolio.md — zero "fund manager" references remain
+- IT sector test passed successfully
+
+### Pending
+- Full 22-sector run to regenerate report.html with frameworks system
+- SIP portfolio framework pass counts need re-validation (old counts were from 16-manager system)
+- TSX Canada expansion (future)
