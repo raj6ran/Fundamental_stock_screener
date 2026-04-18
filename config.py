@@ -333,6 +333,51 @@ RED_FLAGS = {
 }
 
 
+# ═══════════════════════════════════════════════════════════════
+# SECTOR-SPECIFIC ADJUSTMENTS
+# ═══════════════════════════════════════════════════════════════
+# Financial companies (banks, NBFCs, insurance, AMCs) use leverage
+# as their core business model.  Standard industrial metrics for
+# D/E, FCF, IC, Altman Z, and Piotroski are structurally biased
+# against them.  Source: Damodaran "Valuing Financial Service Firms".
+#
+# Capital-intensive regulated sectors (Utilities, Telecom) carry
+# higher leverage than industrials but with stable, predictable
+# cash flows.  D/E 2-3× is standard.
+
+FINANCIAL_SECTORS = {"Financial Services"}
+
+# Regulated capex-heavy sectors where D/E up to 3× is standard
+HIGH_LEVERAGE_SECTORS = {"Utilities", "Telecommunication"}
+
+# Red-flag checks to SKIP for financial-sector companies.
+# None = skip that check entirely.
+RED_FLAGS_FINANCIAL_SKIP = {
+    "debt_to_equity_max",       # Leverage IS the business model
+    "interest_coverage_min",    # Interest expense is operating cost (NIM matters)
+    "altman_z_min",             # Original model not designed for financials (Altman 1968)
+    "piotroski_min",            # Structurally biased (leverage, CR, asset-turnover tests)
+    "accrual_ratio_max",        # Distorted by loan-book changes in OCF
+    "negative_fcf",             # Loan-book growth shows as negative OCF/FCF
+}
+
+# Higher D/E threshold for regulated capital-intensive sectors
+RED_FLAGS_HIGH_LEVERAGE_DE_MAX = 3.0
+
+# ── Financial-sector scoring overrides ──
+# D/E scoring: For an NBFC/bank, D/E 3× = well-capitalised, D/E 8× = over-leveraged
+FINANCIAL_DE_IDEAL = 3.0
+FINANCIAL_DE_WORST = 8.0
+
+# ROA norms: Banks 1-2% is good; NBFCs 2-3%+ is excellent.
+FINANCIAL_ROA_MIN = 1.0
+FINANCIAL_ROA_EXCELLENT = 3.0
+
+# Coffee Can: Mukherjea uses D/E ≤ 1.0 for industrials.
+# For financials a well-capitalised NBFC with D/E ≤ 5 qualifies.
+COFFEE_CAN_FINANCIAL_DE_MAX = 5.0
+
+
 # ─────────────────────────────────────────────
 # INTRINSIC VALUE
 # ─────────────────────────────────────────────

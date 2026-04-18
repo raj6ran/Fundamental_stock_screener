@@ -16,6 +16,11 @@ from config import (
     MOAT_TYPES, MOAT_THRESHOLDS, SECTOR_MOAT_HINTS, EARNINGS_QUALITY, INSTITUTIONAL,
     SECTOR_DIVERSIFICATION, SECTOR_THREATS, SECTOR_TAILWINDS,
     MANAGEMENT, RED_FLAGS, COFFEE_CAN,
+    FINANCIAL_SECTORS, HIGH_LEVERAGE_SECTORS,
+    RED_FLAGS_FINANCIAL_SKIP, RED_FLAGS_HIGH_LEVERAGE_DE_MAX,
+    FINANCIAL_DE_IDEAL, FINANCIAL_DE_WORST,
+    FINANCIAL_ROA_MIN, FINANCIAL_ROA_EXCELLENT,
+    COFFEE_CAN_FINANCIAL_DE_MAX,
 )
 
 
@@ -58,30 +63,42 @@ def _avg(parts: list[float]) -> float:
 # RED FLAGS — instant rejection (Filter 11)
 # ═══════════════════════════════════════════════
 
-def check_red_flags(row: pd.Series) -> list[str]:
-    """Return list of red-flag descriptions. Non-empty = reject."""
+def check_red_flags(row: pd.Series, sector: str = "") -> list[str]:
+    """Return list of red-flag descriptions. Non-empty = reject.
+
+    Sector-aware: financial companies (banks, NBFCs, insurance) skip
+    checks that are structurally inappropriate for leverage-based
+    business models (D/E, FCF, IC, Altman Z, Piotroski, accruals).
+    """
     flags: list[str] = []
     R = RED_FLAGS
+    is_financial = sector in FINANCIAL_SECTORS
+    is_high_lev = sector in HIGH_LEVERAGE_SECTORS
+    skip = RED_FLAGS_FINANCIAL_SKIP if is_financial else set()
 
     pe = row.get("pe", np.nan)
     if not pd.isna(pe) and pe > R["pe_max"]:
         flags.append(f"PE {pe:.1f} > {R['pe_max']}")
 
-    de = row.get("debt_to_equity", np.nan)
-    if not pd.isna(de) and de > R["debt_to_equity_max"]:
-        flags.append(f"D/E {de:.2f} > {R['debt_to_equity_max']}")
+    if "debt_to_equity_max" not in skip:
+        de = row.get("debt_to_equity", np.nan)
+        de_max = RED_FLAGS_HIGH_LEVERAGE_DE_MAX if is_high_lev else R["debt_to_equity_max"]
+        if not pd.isna(de) and de > de_max:
+            flags.append(f"D/E {de:.2f} > {de_max}")
 
-    ic = row.get("interest_coverage", np.nan)
-    if not pd.isna(ic) and ic < R["interest_coverage_min"]:
-        flags.append(f"Interest coverage {ic:.1f}x < {R['interest_coverage_min']}x")
+    if "interest_coverage_min" not in skip:
+        ic = row.get("interest_coverage", np.nan)
+        if not pd.isna(ic) and ic < R["interest_coverage_min"]:
+            flags.append(f"Interest coverage {ic:.1f}x < {R['interest_coverage_min']}x")
 
     dq = row.get("profit_declining_quarters", 0)
     if dq >= R["profit_declining_quarters"]:
         flags.append(f"Profit declining {dq} consecutive quarters")
 
-    fcf = row.get("free_cash_flow", np.nan)
-    if not pd.isna(fcf) and fcf < 0:
-        flags.append("Negative free cash flow")
+    if "negative_fcf" not in skip:
+        fcf = row.get("free_cash_flow", np.nan)
+        if not pd.isna(fcf) and fcf < 0:
+            flags.append("Negative free cash flow")
 
     mcap = row.get("market_cap_cr", np.nan)
     if not pd.isna(mcap) and mcap < R["market_cap_min_cr"]:
@@ -91,17 +108,20 @@ def check_red_flags(row: pd.Series) -> list[str]:
     if not pd.isna(ni) and ni < 0:
         flags.append("Current year net loss")
 
-    z = row.get("altman_z", np.nan)
-    if not pd.isna(z) and z < R["altman_z_min"]:
-        flags.append(f"Altman Z-Score {z:.2f} < {R['altman_z_min']} (distress)")
+    if "altman_z_min" not in skip:
+        z = row.get("altman_z", np.nan)
+        if not pd.isna(z) and z < R["altman_z_min"]:
+            flags.append(f"Altman Z-Score {z:.2f} < {R['altman_z_min']} (distress)")
 
-    f_score = row.get("piotroski_score", np.nan)
-    if not pd.isna(f_score) and f_score <= R["piotroski_min"]:
-        flags.append(f"Piotroski F-Score {f_score} <= {R['piotroski_min']}")
+    if "piotroski_min" not in skip:
+        f_score = row.get("piotroski_score", np.nan)
+        if not pd.isna(f_score) and f_score <= R["piotroski_min"]:
+            flags.append(f"Piotroski F-Score {f_score} <= {R['piotroski_min']}")
 
-    accrual = row.get("accrual_ratio", np.nan)
-    if not pd.isna(accrual) and accrual > R["accrual_ratio_max"]:
-        flags.append(f"Accrual ratio {accrual:.2%} > {R['accrual_ratio_max']:.0%}")
+    if "accrual_ratio_max" not in skip:
+        accrual = row.get("accrual_ratio", np.nan)
+        if not pd.isna(accrual) and accrual > R["accrual_ratio_max"]:
+            flags.append(f"Accrual ratio {accrual:.2%} > {R['accrual_ratio_max']:.0%}")
 
     return flags
 
@@ -192,14 +212,25 @@ def score_valuation(row: pd.Series, sector: str = "") -> float:
 # DIM 2 — PROFITABILITY (/10)
 # ═══════════════════════════════════════════════
 
-def score_profitability(row: pd.Series) -> float:
-    """ROE, ROCE, ROA, margins, owner earnings yield."""
+def score_profitability(row: pd.Series, sector: str = "") -> float:
+    """ROE, ROCE, ROA, margins, owner earnings yield.
+
+    Sector-aware: financials use lower ROA thresholds (banks 1-2% is
+    good) since their asset base is dominated by the loan book.
+    """
     P = PROFITABILITY
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
     parts.append(_higher_better(row.get("roe_pct"), P["roe_min"], P["roe_excellent"]))
     parts.append(_higher_better(row.get("roce_pct"), P["roce_min"], P["roce_excellent"]))
-    parts.append(_higher_better(row.get("roa_pct"), P["roa_min"], P["roa_excellent"]))
+
+    # ROA: banks/NBFCs have massive asset bases (loan book), 1-3% ROA is excellent
+    if is_financial:
+        parts.append(_higher_better(row.get("roa_pct"), FINANCIAL_ROA_MIN, FINANCIAL_ROA_EXCELLENT))
+    else:
+        parts.append(_higher_better(row.get("roa_pct"), P["roa_min"], P["roa_excellent"]))
+
     parts.append(_higher_better(row.get("operating_margin_pct"), P["operating_margin_min"], P["operating_margin_excellent"]))
     parts.append(_higher_better(row.get("net_margin_pct"), P["net_margin_min"], P["net_margin_excellent"]))
 
@@ -259,31 +290,51 @@ def score_growth(row: pd.Series) -> float:
 # DIM 4 — FINANCIAL HEALTH (/10)
 # ═══════════════════════════════════════════════
 
-def score_financial_health(row: pd.Series) -> float:
-    """Altman Z-Score, D/E, interest coverage, current ratio."""
+def score_financial_health(row: pd.Series, sector: str = "") -> float:
+    """Altman Z-Score, D/E, interest coverage, current ratio.
+
+    Sector-aware: For financial companies the Altman Z model (designed
+    for manufacturing in 1968) is inapplicable.  D/E 3-5× is normal
+    for NBFCs/banks.  Interest coverage and current ratio are also
+    structurally different because interest expense is operating cost
+    and deposits are current liabilities.
+    """
     H = FINANCIAL_HEALTH
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
-    # Altman Z-Score
-    z = row.get("altman_z", np.nan)
-    if not pd.isna(z):
-        if z >= H["altman_z_safe"]:
-            parts.append(10)
-        elif z >= H["altman_z_distress"]:
-            parts.append(5)
-        else:
-            parts.append(0)
+    # Altman Z-Score — skip for financials (model not designed for them)
+    if is_financial:
+        parts.append(5.0)  # neutral
     else:
-        parts.append(4)
+        z = row.get("altman_z", np.nan)
+        if not pd.isna(z):
+            if z >= H["altman_z_safe"]:
+                parts.append(10)
+            elif z >= H["altman_z_distress"]:
+                parts.append(5)
+            else:
+                parts.append(0)
+        else:
+            parts.append(4)
 
-    # D/E
-    parts.append(_lower_better(row.get("debt_to_equity"), 0.0, H["de_threshold_high"], na_score=5))
+    # D/E — financials: 3× ideal, 8× over-leveraged
+    if is_financial:
+        parts.append(_lower_better(row.get("debt_to_equity"), FINANCIAL_DE_IDEAL, FINANCIAL_DE_WORST, na_score=5))
+    else:
+        parts.append(_lower_better(row.get("debt_to_equity"), 0.0, H["de_threshold_high"], na_score=5))
 
-    # Interest coverage
-    parts.append(_higher_better(row.get("interest_coverage"), H["interest_coverage_min"], H["interest_coverage_good"], na_score=5))
+    # Interest coverage — meaningless for financials (interest IS operating cost)
+    if is_financial:
+        parts.append(6.0)  # neutral-positive
+    else:
+        parts.append(_higher_better(row.get("interest_coverage"), H["interest_coverage_min"], H["interest_coverage_good"], na_score=5))
 
-    # Current ratio
-    parts.append(_higher_better(row.get("current_ratio"), H["current_ratio_min"], H["current_ratio_good"], na_score=5))
+    # Current ratio — banks structurally have CR < 1 (short-term deposits fund long-term loans)
+    if is_financial:
+        parts.append(6.0)  # neutral-positive
+    else:
+        parts.append(_higher_better(row.get("current_ratio"), H["current_ratio_min"], H["current_ratio_good"], na_score=5))
 
     return _avg(parts)
 
@@ -292,38 +343,50 @@ def score_financial_health(row: pd.Series) -> float:
 # DIM 5 — CASH FLOW (/10)
 # ═══════════════════════════════════════════════
 
-def score_cash_flow(row: pd.Series) -> float:
-    """FCF positive, FCF conversion, FCF yield, OCF/NI, capex intensity."""
+def score_cash_flow(row: pd.Series, sector: str = "") -> float:
+    """FCF positive, FCF conversion, FCF yield, OCF/NI, capex intensity.
+
+    Sector-aware: For financial companies, free-cash-flow metrics are
+    meaningless — growing the loan book appears as cash *outflow* in
+    operating activities.  Financials get neutral scores (5) for FCF
+    sub-metrics and are scored on capex intensity only.
+    """
     C = CASH_FLOW
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
-    # FCF positive
-    fcf = row.get("free_cash_flow", np.nan)
-    if pd.isna(fcf):
-        parts.append(3)
-    elif fcf > 0:
-        parts.append(8)
+    if is_financial:
+        # FCF-based metrics are structurally distorted for lenders.
+        # Use neutral scores so the dimension neither helps nor hurts.
+        parts.extend([5.0, 5.0, 5.0, 5.0])
     else:
-        parts.append(0)
+        # FCF positive
+        fcf = row.get("free_cash_flow", np.nan)
+        if pd.isna(fcf):
+            parts.append(3)
+        elif fcf > 0:
+            parts.append(8)
+        else:
+            parts.append(0)
 
-    # FCF Conversion = FCF / Net Income (>0.8 good, >0.9 excellent)
-    conv = row.get("fcf_conversion", np.nan)
-    if not pd.isna(conv) and conv > 0:
-        parts.append(_higher_better(conv, C["fcf_conversion_min"], C["fcf_conversion_good"], na_score=3))
-    else:
-        parts.append(2 if pd.isna(conv) else 0)
+        # FCF Conversion = FCF / Net Income (>0.8 good, >0.9 excellent)
+        conv = row.get("fcf_conversion", np.nan)
+        if not pd.isna(conv) and conv > 0:
+            parts.append(_higher_better(conv, C["fcf_conversion_min"], C["fcf_conversion_good"], na_score=3))
+        else:
+            parts.append(2 if pd.isna(conv) else 0)
 
-    # FCF yield
-    parts.append(_higher_better(row.get("fcf_yield_pct"), C["fcf_yield_min"], C["fcf_yield_good"], na_score=3))
+        # FCF yield
+        parts.append(_higher_better(row.get("fcf_yield_pct"), C["fcf_yield_min"], C["fcf_yield_good"], na_score=3))
 
-    # OCF / Net Income
-    ocf_ni = row.get("ocf_ni_ratio", np.nan)
-    if not pd.isna(ocf_ni) and ocf_ni > 0:
-        parts.append(_higher_better(ocf_ni, C["ocf_to_net_income_min"], C["ocf_to_net_income_good"], na_score=4))
-    else:
-        parts.append(2 if pd.isna(ocf_ni) else 0)
+        # OCF / Net Income
+        ocf_ni = row.get("ocf_ni_ratio", np.nan)
+        if not pd.isna(ocf_ni) and ocf_ni > 0:
+            parts.append(_higher_better(ocf_ni, C["ocf_to_net_income_min"], C["ocf_to_net_income_good"], na_score=4))
+        else:
+            parts.append(2 if pd.isna(ocf_ni) else 0)
 
-    # CapEx intensity (lower = more capital-light = better)
+    # CapEx intensity (lower = more capital-light = better) — valid for all sectors
     capex = row.get("capex_intensity", np.nan)
     if not pd.isna(capex):
         parts.append(_lower_better(capex, 0.03, 0.20, na_score=5))
@@ -442,21 +505,34 @@ def score_moat(row: pd.Series, sector: str = "") -> tuple[float, str, list[str]]
 # DIM 7 — EARNINGS QUALITY (/10)
 # ═══════════════════════════════════════════════
 
-def score_earnings_quality(row: pd.Series) -> float:
-    """Piotroski F-Score, accrual ratio, OCF vs NI, gross margin trend."""
+def score_earnings_quality(row: pd.Series, sector: str = "") -> float:
+    """Piotroski F-Score, accrual ratio, OCF vs NI, gross margin trend.
+
+    Sector-aware: For financial companies, Piotroski F-Score is
+    structurally biased (leverage, current-ratio, and asset-turnover
+    tests penalise growing lenders).  Accrual ratio and OCF vs NI are
+    also distorted by loan-book cash flows.  These sub-metrics get
+    neutral scores; margin trend still applies.
+    """
     E = EARNINGS_QUALITY
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
     # Piotroski F-Score (0-9 mapped to 0-10)
     f_score = row.get("piotroski_score", np.nan)
-    if not pd.isna(f_score):
+    if is_financial:
+        # Piotroski structurally penalises financials; use neutral score
+        parts.append(5.0)
+    elif not pd.isna(f_score):
         parts.append(round(f_score / 9 * 10, 1))
     else:
         parts.append(4)
 
     # Accrual ratio (lower/negative = better)
     accrual = row.get("accrual_ratio", np.nan)
-    if not pd.isna(accrual):
+    if is_financial:
+        parts.append(5.0)  # distorted by loan-book OCF
+    elif not pd.isna(accrual):
         if accrual <= E["accrual_ratio_ideal"]:
             parts.append(10)  # negative accruals = cash-backed
         elif accrual <= E["accrual_ratio_max"]:
@@ -467,19 +543,22 @@ def score_earnings_quality(row: pd.Series) -> float:
         parts.append(4)
 
     # OCF > Net Income (quality signal from Piotroski)
-    ocf = row.get("operating_cash_flow", np.nan)
-    ni = row.get("net_income_latest", np.nan)
-    if not pd.isna(ocf) and not pd.isna(ni):
-        if ni > 0 and ocf > ni:
-            parts.append(9)
-        elif ni > 0 and ocf > 0:
-            parts.append(5)
-        else:
-            parts.append(1)
+    if is_financial:
+        parts.append(5.0)  # OCF distorted for lenders
     else:
-        parts.append(4)
+        ocf = row.get("operating_cash_flow", np.nan)
+        ni = row.get("net_income_latest", np.nan)
+        if not pd.isna(ocf) and not pd.isna(ni):
+            if ni > 0 and ocf > ni:
+                parts.append(9)
+            elif ni > 0 and ocf > 0:
+                parts.append(5)
+            else:
+                parts.append(1)
+        else:
+            parts.append(4)
 
-    # Margin trend
+    # Margin trend — meaningful for all sectors
     mt = row.get("margin_trend", "stable")
     if mt == "expanding":
         parts.append(9)
@@ -523,6 +602,7 @@ def score_institutional(row: pd.Series) -> float:
 
 def score_sector_macro(row: pd.Series, sector: str = "") -> float:
     """Tailwinds, threats, diversification, cyclicality — combined."""
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
     # Sector tailwind
@@ -538,11 +618,12 @@ def score_sector_macro(row: pd.Series, sector: str = "") -> float:
         div_base = max(0, div_base - 1)
     parts.append(float(div_base))
 
-    # Future threats
+    # Future threats — skip D/E penalty for financials (leverage is structural)
     threat_base = SECTOR_THREATS.get(sector, 5)
-    de = row.get("debt_to_equity", np.nan)
-    if not pd.isna(de) and de > 1.0:
-        threat_base = max(0, threat_base - 1)
+    if not is_financial:
+        de = row.get("debt_to_equity", np.nan)
+        if not pd.isna(de) and de > 1.0:
+            threat_base = max(0, threat_base - 1)
     q_dir = row.get("quarterly_profit_direction", "unknown")
     if q_dir == "declining":
         threat_base = max(0, threat_base - 1)
@@ -566,9 +647,13 @@ def score_sector_macro(row: pd.Series, sector: str = "") -> float:
 # DIM 10 — MANAGEMENT (/10)
 # ═══════════════════════════════════════════════
 
-def score_management(row: pd.Series) -> float:
-    """ROCE consistency, payout, debt discipline, margin trend, dilution, FCF."""
+def score_management(row: pd.Series, sector: str = "") -> float:
+    """ROCE consistency, payout, debt discipline, margin trend, dilution, FCF.
+
+    Sector-aware: financials use adjusted D/E range and neutral FCF.
+    """
     M = MANAGEMENT
+    is_financial = sector in FINANCIAL_SECTORS
     parts: list[float] = []
 
     # Capital allocation (ROCE)
@@ -587,8 +672,11 @@ def score_management(row: pd.Series) -> float:
     else:
         parts.append(3)
 
-    # Debt discipline
-    parts.append(_lower_better(row.get("debt_to_equity"), 0.0, 1.5, na_score=5))
+    # Debt discipline — financials: 3× ideal, 8× over-leveraged
+    if is_financial:
+        parts.append(_lower_better(row.get("debt_to_equity"), FINANCIAL_DE_IDEAL, FINANCIAL_DE_WORST, na_score=5))
+    else:
+        parts.append(_lower_better(row.get("debt_to_equity"), 0.0, 1.5, na_score=5))
 
     # Margin trend
     mt = row.get("margin_trend", "stable")
@@ -603,14 +691,17 @@ def score_management(row: pd.Series) -> float:
     diluted = row.get("shares_diluted", False)
     parts.append(3 if diluted else 7)
 
-    # FCF positive
-    fcf = row.get("free_cash_flow", np.nan)
-    if pd.isna(fcf):
-        parts.append(4)
-    elif fcf > 0:
-        parts.append(8)
+    # FCF positive — for financials, loan-book growth = negative FCF; neutral
+    if is_financial:
+        parts.append(5.0)
     else:
-        parts.append(2)
+        fcf = row.get("free_cash_flow", np.nan)
+        if pd.isna(fcf):
+            parts.append(4)
+        elif fcf > 0:
+            parts.append(8)
+        else:
+            parts.append(2)
 
     return _avg(parts)
 
@@ -623,27 +714,27 @@ def score_stock_full(row: pd.Series, sector: str = "") -> dict:
     """Run all 10 dimension scorers. Returns results dict."""
     results: dict = {}
 
-    # Red flags
-    flags = check_red_flags(row)
+    # Red flags (sector-aware)
+    flags = check_red_flags(row, sector)
     results["red_flags"] = "; ".join(flags) if flags else ""
     results["is_rejected"] = len(flags) > 0
 
-    # 10 dimensions
+    # 10 dimensions (sector-aware where applicable)
     results["valuation_score"] = score_valuation(row, sector)
-    results["profitability_score"] = score_profitability(row)
+    results["profitability_score"] = score_profitability(row, sector)
     results["growth_score"] = score_growth(row)
-    results["financial_health_score"] = score_financial_health(row)
-    results["cash_flow_score"] = score_cash_flow(row)
+    results["financial_health_score"] = score_financial_health(row, sector)
+    results["cash_flow_score"] = score_cash_flow(row, sector)
 
     moat_score, moat_rating, moat_types = score_moat(row, sector)
     results["moat_score"] = moat_score
     results["moat"] = moat_rating
     results["moat_types"] = ", ".join(moat_types) if moat_types else "None identified"
 
-    results["earnings_quality_score"] = score_earnings_quality(row)
+    results["earnings_quality_score"] = score_earnings_quality(row, sector)
     results["institutional_score"] = score_institutional(row)
     results["sector_macro_score"] = score_sector_macro(row, sector)
-    results["management_score"] = score_management(row)
+    results["management_score"] = score_management(row, sector)
 
     # Total
     total = sum([
@@ -752,16 +843,26 @@ def margin_of_safety(current_price, intrinsic_value) -> float:
 # COFFEE CAN CHECK
 # ═══════════════════════════════════════════════
 
-def coffee_can_eligible(row: pd.Series) -> bool:
+def coffee_can_eligible(row: pd.Series, sector: str = "") -> bool:
+    """Coffee Can criteria.  For financials, D/E threshold is relaxed to 5×
+    (Mukherjea's framework was designed for industrials)."""
+    is_financial = sector in FINANCIAL_SECTORS
     rg = row.get("revenue_cagr_3y", np.nan)
-    roce = row.get("roce_pct", np.nan)
     de = row.get("debt_to_equity", np.nan)
+
+    # For financials, use ROE as profitability proxy when ROCE is unavailable
+    roce = row.get("roce_pct", np.nan)
+    if is_financial and pd.isna(roce):
+        roce = row.get("roe_pct", np.nan)
+
     if pd.isna(rg) or pd.isna(roce):
         return False
+
+    de_max = COFFEE_CAN_FINANCIAL_DE_MAX if is_financial else COFFEE_CAN["debt_to_equity_max"]
     return (
         rg >= COFFEE_CAN["revenue_cagr_min"]
         and roce >= COFFEE_CAN["roce_min"]
-        and (pd.isna(de) or de <= COFFEE_CAN["debt_to_equity_max"])
+        and (pd.isna(de) or de <= de_max)
     )
 
 
@@ -812,8 +913,10 @@ def analyze_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     )
     df = pd.concat([df, score_df], axis=1)
 
-    # Coffee Can
-    df["coffee_can"] = df.apply(coffee_can_eligible, axis=1)
+    # Coffee Can (sector-aware D/E threshold)
+    df["coffee_can"] = df.apply(
+        lambda row: coffee_can_eligible(row, row.get("sector", "")), axis=1,
+    )
 
     # Magic Formula cross-check
     df = magic_formula_rank(df)
