@@ -16,7 +16,7 @@ config.py           → All filter thresholds, scoring definitions, FILTER_REFER
 data_fetcher.py     → yfinance data retrieval, Piotroski F-Score, Altman Z, derived metrics
 analyzer.py         → 10-dimension scoring engine, Graham Number, DCF, reverse DCF, moat, Coffee Can, Magic Formula
 screener.py         → Main CLI — runs sectors, generates HTML report
-report_generator.py → Tabbed HTML report with dashboard, rankings, stock cards, framework reference
+report_generator.py → Tabbed HTML report with dashboard, rankings, stock cards, frameworks
 ```
 
 See [context.md](../context.md) for full filter definitions and scoring logic.

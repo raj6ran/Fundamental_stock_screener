@@ -788,6 +788,13 @@ def magic_formula_rank(df: pd.DataFrame) -> pd.DataFrame:
     df["magic_formula_rank"] = df["magic_ey_rank"] + df["magic_roic_rank"]
     df["magic_formula_rank"] = df["magic_formula_rank"].rank(ascending=True, na_option="bottom").astype(int)
 
+    # Percentile: lower rank = better → higher percentile
+    n = len(df)
+    if n > 0:
+        df["magic_formula_percentile"] = ((n - df["magic_formula_rank"]) / n * 100).round(1)
+    else:
+        df["magic_formula_percentile"] = np.nan
+
     return df
 
 

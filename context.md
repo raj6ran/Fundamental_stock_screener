@@ -307,7 +307,7 @@ Metals & Mining, Oil Gas & Consumable Fuels, Automobile and Auto Components, Rea
 - Goal: cover all NSE sectors with top 50 stocks each for comprehensive gem discovery.
 
 ### HTML Report
-- Dark theme (GitHub-inspired), 7 tabs: Dashboard, Rankings, Top Picks, Frameworks, By Sector, All Stocks, Framework Reference.
+- Dark theme (GitHub-inspired), 6 tabs: Dashboard, Rankings, Top Picks, By Sector, All Stocks, Frameworks.
 - Multi-column sort on Rankings tab: Click to sort, Shift+Click for secondary/tertiary sorts.
 - Stock cards with all 10 dimension scores, intrinsic value comparisons, moat details, red flags.
 - Sort arrows with priority badges for multi-column sorting.
@@ -367,7 +367,7 @@ Stocks passing 7+/10 frameworks = highest conviction SIP candidates.
 
 ## Output
 
-- `report.html` — Full HTML report with dashboard, rankings, stock cards, and framework reference
+- `report.html` — Full HTML report with dashboard, rankings, stock cards, and frameworks
 - `sip_portfolio.md` — Core 9 SIP stocks with full thesis and portfolio characteristics
 - Console output — Per-sector top 3 and final verdict summary
 
@@ -380,7 +380,7 @@ Stocks passing 7+/10 frameworks = highest conviction SIP candidates.
 - 10-dimension × 10-point scoring engine with sector-aware thresholds
 - Sector-aware fixes: FINANCIAL_SECTORS, HIGH_LEVERAGE_SECTORS, sector-specific D/E and PE norms
 - 10 published investment frameworks replacing old speculative fund manager overlay
-- 7-tab HTML report: Dashboard, Rankings, Top Picks, Frameworks, By Sector, All Stocks, Framework Reference
+- 6-tab HTML report: Dashboard, Rankings, Top Picks, By Sector, All Stocks, Frameworks (combined investment frameworks + scoring reference)
 - SIP portfolio: 9 core stocks selected (avg score 74.3, ROCE 25.4%, 100% Coffee Can)
 - IT sector test passed (42 stocks, 1 GEM, 14 STRONG)
 

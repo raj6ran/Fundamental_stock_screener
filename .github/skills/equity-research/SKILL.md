@@ -106,10 +106,11 @@ Structure output using all 10 filters:
 #### Verdict
 - GEM (≥75), STRONG (65–74), ACCEPTABLE (55–64), WATCHLIST (40–54), REJECT (<40)
 
-#### Verdict (based on total_score /80)
-- **GEM** (≥60): Strong moat + reasonable valuation + growing + low debt
-- **ACCEPTABLE** (50-59): Decent business, worth accumulating
-- **WATCHLIST** (40-49): Monitor for better entry
+#### Verdict Rationale
+- **GEM** (≥75/100): Strong moat + reasonable valuation + growing + low debt
+- **STRONG** (65–74): Quality business, buy/accumulate
+- **ACCEPTABLE** (55–64): Decent business, hold
+- **WATCHLIST** (40–54): Monitor for better entry
 - **REJECT** (<40): Weak moat, high debt, declining margins, or red-flagged
 
 ### Step 4 — Compare to Peers

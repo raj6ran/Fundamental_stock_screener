@@ -229,6 +229,30 @@ tr:hover td { background:#1c2128; }
 .sort-badge { color:var(--accent); font-size:0.8em; margin-left:2px; }
 .sort-badge sup { font-size:0.7em; }
 thead th { user-select:none; white-space:nowrap; }
+
+/* Collapsible framework sections */
+.fw-section { margin:16px 0; }
+.fw-section-header { display:flex; align-items:center; gap:8px; cursor:pointer; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; transition:all 0.2s; user-select:none; }
+.fw-section-header:hover { border-color:var(--accent); background:#1c2128; }
+.fw-section-header.open { border-radius:8px 8px 0 0; border-bottom-color:transparent; }
+.fw-section-header.open + .fw-section-body { border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px; padding:16px; }
+.fw-section-body { padding:0 16px; }
+.fw-chevron { font-size:0.7rem; color:var(--accent); width:14px; text-align:center; transition:transform 0.2s; }
+
+/* Framework pills (consensus table) */
+.fw-pills { display:flex; flex-wrap:wrap; gap:4px; }
+.fw-pill { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; letter-spacing:0.3px; white-space:nowrap; }
+.fw-pill-pass { background:#1b3a1b; border:1px solid var(--green); color:var(--green); }
+.fw-pill-partial { background:#2a2600; border:1px solid var(--amber); color:var(--amber); }
+
+/* Filter bar */
+.fw-filters { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:12px 0 16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:8px; }
+.fw-filters label { display:flex; align-items:center; gap:6px; color:var(--text2); font-size:0.82rem; font-weight:600; }
+.fw-filters select { background:#0d1117; color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 8px; font-size:0.82rem; cursor:pointer; min-width:100px; }
+.fw-filters select:hover { border-color:var(--accent); }
+.fw-filters select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+.fw-reset-btn { background:transparent; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:4px 12px; font-size:0.82rem; cursor:pointer; transition:all 0.2s; }
+.fw-reset-btn:hover { background:var(--accent); color:var(--bg); }
 </style>
 """
 
@@ -322,6 +346,50 @@ function sortTable(tableId, colIdx, numeric, evt) {
         th.appendChild(span);
     }
 }
+
+function toggleSection(header) {
+    var body = header.nextElementSibling;
+    var chevron = header.querySelector('.fw-chevron');
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        header.classList.add('open');
+        chevron.innerHTML = '&#9660;';
+    } else {
+        body.style.display = 'none';
+        header.classList.remove('open');
+        chevron.innerHTML = '&#9654;';
+    }
+}
+
+function filterConsensus() {
+    var verdict = document.getElementById('flt_verdict').value;
+    var fwMin = parseInt(document.getElementById('flt_fwcount').value) || 0;
+    var sector = document.getElementById('flt_sector').value;
+    var framework = document.getElementById('flt_framework').value;
+    var table = document.getElementById('fw_consensus');
+    if (!table) return;
+    var rows = table.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var show = true;
+        if (verdict && r.getAttribute('data-verdict') !== verdict) show = false;
+        if (fwMin > 0 && parseInt(r.getAttribute('data-fwcount')) < fwMin) show = false;
+        if (sector && r.getAttribute('data-sector') !== sector) show = false;
+        if (framework) {
+            var fws = r.getAttribute('data-fw') || '';
+            if (fws.split('|').indexOf(framework) < 0) show = false;
+        }
+        r.style.display = show ? '' : 'none';
+    }
+}
+
+function resetFilters() {
+    document.getElementById('flt_verdict').value = '';
+    document.getElementById('flt_fwcount').value = '0';
+    document.getElementById('flt_sector').value = '';
+    document.getElementById('flt_framework').value = '';
+    filterConsensus();
+}
 </script>
 """
 
@@ -338,7 +406,7 @@ FRAMEWORKS = [
         "name": "Graham Value",
         "author": "Benjamin Graham",
         "source": "The Intelligent Investor (1949), Security Analysis (1934)",
-        "criteria": "PE < 15, PB < 1.5, PE×PB < 22.5, current ratio > 2, D/E < 0.5, positive earnings, margin of safety > 0",
+        "criteria": "PE < 15, PB < 1.5, PE×PB < 22.5, current ratio > 2, D/E < 0.5, positive earnings, margin of safety > 0. Pass ≥ 3/6 criteria",
         "verdict": "PASS/FAIL",
     },
     {
@@ -466,11 +534,13 @@ def _match_frameworks(row) -> list[dict]:
         g_reasons.append(f"EPS ₹{eps:.1f} positive")
     if g_mos:
         g_reasons.append(f"Graham MoS +{mos_g:.0f}%")
-    passed = sum([g_pe, g_pb or g_pepb, g_de, g_eps, g_mos])
+    if g_cr:
+        g_reasons.append(f"Current ratio {current_ratio:.2f} > 2")
+    passed = sum([g_pe, g_pb or g_pepb, g_de, g_cr, g_eps, g_mos])
     if passed >= 3:
-        status = "PASS" if passed >= 4 else "PARTIAL"
+        status = "PASS" if passed >= 5 else "PARTIAL"
         picks.append({"framework_idx": 0, "reasons": g_reasons, "status": status,
-                       "result": f"{passed}/5 criteria met"})
+                       "result": f"{passed}/6 criteria met"})
 
     # ── 1. Piotroski F-Score ──
     # Source: Piotroski (2000), 9 binary tests
@@ -658,7 +728,8 @@ def _framework_badge(status: str) -> str:
 
 
 def _frameworks_html(df) -> str:
-    """Build the Investment Frameworks tab content."""
+    """Build the Investment Frameworks tab content with collapsible sections,
+    one-row-per-ticker consensus table, dropdown filters, and multi-sort."""
     qualified = df[df["verdict"].isin(["GEM", "STRONG", "ACCEPTABLE"])].copy()
 
     all_picks = []
@@ -683,30 +754,140 @@ def _frameworks_html(df) -> str:
     if not all_picks:
         return '<p class="meta">No stocks matched any framework criteria in this run.</p>'
 
+    # ── Deduplicate by (ticker, framework) ──
+    from collections import defaultdict, Counter
+    seen = set()
+    unique_picks = []
+    for p in all_picks:
+        key = (p["ticker"], p["framework"])
+        if key not in seen:
+            seen.add(key)
+            unique_picks.append(p)
+
+    # ── Build per-ticker data for consensus table ──
+    ticker_data: dict[str, dict] = {}
+    for p in unique_picks:
+        tk = p["ticker"]
+        if tk not in ticker_data:
+            ticker_data[tk] = {
+                "ticker": tk,
+                "name": p["name"],
+                "sector": p["sector"],
+                "score": p["score"],
+                "verdict": p["verdict"],
+                "frameworks": [],
+            }
+        ticker_data[tk]["frameworks"].append({
+            "name": p["framework"],
+            "result": p["result"],
+            "status": p["status"],
+        })
+
     lines = []
 
-    # ── Section 1: Framework reference cards ──
-    lines.append('<h3 style="margin-bottom:4px">Published Investment Frameworks</h3>')
-    lines.append('<p class="meta" style="margin-top:0">Every criterion below is from a published book, academic paper, or annual study. '
-                 'No speculative or internet-derived rules.</p>')
-    lines.append('<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;">')
-    for fw in FRAMEWORKS:
-        lines.append('<div class="filter-ref">')
-        lines.append(f'<h4 style="margin-bottom:2px">{escape(fw["name"])}</h4>')
-        lines.append(f'<p style="color:var(--text2);font-size:0.82rem;margin:2px 0">'
-                     f'<strong>{escape(fw["author"])}</strong> — {escape(fw["source"])}</p>')
-        lines.append(f'<p style="font-size:0.85rem;margin:4px 0"><strong>Criteria:</strong> {escape(fw["criteria"])}</p>')
-        lines.append(f'<p style="font-size:0.82rem;margin:2px 0;color:var(--text2)"><strong>Verdict:</strong> {escape(fw["verdict"])}</p>')
-        lines.append('</div>')
+    # ════════════════════════════════════════════════
+    # Section 1: Multi-Framework Consensus (DEFAULT OPEN)
+    # ════════════════════════════════════════════════
+    lines.append('<div class="fw-section">')
+    lines.append('<div class="fw-section-header open" onclick="toggleSection(this)">')
+    lines.append('<span class="fw-chevron">&#9660;</span>')
+    lines.append('<h3 style="display:inline;margin:0">Multi-Framework Consensus</h3>')
+    lines.append('</div>')
+    lines.append('<div class="fw-section-body" style="display:block">')
+    lines.append('<p class="meta">One row per stock. Stocks passing 7+/10 frameworks are rare multi-dimensional quality signals. '
+                 'Click headers to sort, Shift+Click for multi-column sort.</p>')
+
+    # ── Filter bar ──
+    sectors = sorted({d["sector"] for d in ticker_data.values()})
+    verdicts = sorted({d["verdict"] for d in ticker_data.values()})
+    fw_counts = sorted({len(d["frameworks"]) for d in ticker_data.values()}, reverse=True)
+    fw_names_all = sorted({f["name"] for d in ticker_data.values() for f in d["frameworks"]})
+
+    lines.append('<div class="fw-filters">')
+    lines.append('<label>Verdict <select id="flt_verdict" onchange="filterConsensus()">'
+                 '<option value="">All</option>')
+    for v in verdicts:
+        lines.append(f'<option value="{escape(v)}">{escape(v)}</option>')
+    lines.append('</select></label>')
+
+    lines.append('<label>Fw Count ≥ <select id="flt_fwcount" onchange="filterConsensus()">'
+                 '<option value="0">All</option>')
+    for fc in fw_counts:
+        if fc >= 2:
+            lines.append(f'<option value="{fc}">{fc}+</option>')
+    lines.append('</select></label>')
+
+    lines.append('<label>Sector <select id="flt_sector" onchange="filterConsensus()">'
+                 '<option value="">All</option>')
+    for s in sectors:
+        lines.append(f'<option value="{escape(s)}">{escape(s)}</option>')
+    lines.append('</select></label>')
+
+    lines.append('<label>Framework <select id="flt_framework" onchange="filterConsensus()">'
+                 '<option value="">All</option>')
+    for fn in fw_names_all:
+        lines.append(f'<option value="{escape(fn)}">{escape(fn)}</option>')
+    lines.append('</select></label>')
+
+    lines.append('<button class="fw-reset-btn" onclick="resetFilters()">Reset</button>')
     lines.append('</div>')
 
-    # ── Section 2: By-framework sections ──
-    lines.append('<h3 style="margin-top:24px">Results by Framework</h3>')
+    # ── Consensus table: one row per ticker ──
+    cons_sorted = sorted(ticker_data.values(), key=lambda d: (-len(d["frameworks"]), -d["score"]))
 
-    from collections import defaultdict
+    lines.append('<table id="fw_consensus">')
+    lines.append('<thead><tr>')
+    cons_cols = [("Stock", False), ("Sector", False), ("Score", True),
+                 ("Verdict", False), ("Fw Count", True), ("Frameworks", False)]
+    for ci, (label, numeric) in enumerate(cons_cols):
+        sort_call = f' onclick="sortTable(\'fw_consensus\',{ci},{str(numeric).lower()},event)" style="cursor:pointer"'
+        lines.append(f'<th{sort_call}>{label}</th>')
+    lines.append('</tr></thead><tbody>')
+
+    for d in cons_sorted:
+        t_score = d["score"]
+        fc = len(d["frameworks"])
+        fc_color = "var(--green)" if fc >= 7 else "var(--accent)" if fc >= 5 else "var(--text2)"
+
+        # Build framework pills — show name + result as compact badges
+        fw_pills = []
+        for f in sorted(d["frameworks"], key=lambda x: x["name"]):
+            status_cls = "fw-pill-pass" if f["status"] in ("PASS", "STRONG", "SAFE", "ELIGIBLE",
+                "FRANCHISE", "WIDE", "UNDERVALUED", "BARGAIN", "TOP DECILE") else "fw-pill-partial"
+            fw_pills.append(f'<span class="fw-pill {status_cls}" title="{escape(f["result"])}">'
+                            f'{escape(f["name"])}: {escape(f["result"])}</span>')
+
+        # data-fw attribute stores framework names for filtering
+        fw_names_str = "|".join(f["name"] for f in d["frameworks"])
+
+        lines.append(f'<tr data-verdict="{escape(d["verdict"])}" data-fwcount="{fc}" '
+                     f'data-sector="{escape(d["sector"])}" data-fw="{escape(fw_names_str)}">')
+        lines.append(f'<td><a href="#{escape(d["ticker"])}">{escape(d["ticker"])}</a><br>'
+                     f'<span style="font-size:0.75rem;color:var(--text2)">{escape(d["name"])}</span></td>')
+        lines.append(f'<td>{escape(d["sector"])}</td>')
+        lines.append(f'<td data-val="{t_score}" style="color:{_score_color(t_score, 100)};font-weight:700">{t_score:.1f}</td>')
+        lines.append(f'<td>{_verdict_badge(d["verdict"])}</td>')
+        lines.append(f'<td data-val="{fc}" style="text-align:center;font-weight:700;color:{fc_color}">{fc}/10</td>')
+        lines.append(f'<td><div class="fw-pills">{"".join(fw_pills)}</div></td>')
+        lines.append('</tr>')
+
+    lines.append('</tbody></table>')
+    lines.append('</div></div>')  # close section body + section
+
+    # ════════════════════════════════════════════════
+    # Section 2: Results by Framework (COLLAPSED)
+    # ════════════════════════════════════════════════
     by_framework: dict[str, list] = defaultdict(list)
-    for p in all_picks:
+    for p in unique_picks:
         by_framework[p["framework"]].append(p)
+
+    lines.append('<div class="fw-section">')
+    lines.append('<div class="fw-section-header" onclick="toggleSection(this)">')
+    lines.append('<span class="fw-chevron">&#9654;</span>')
+    lines.append(f'<h3 style="display:inline;margin:0">Results by Framework '
+                 f'<span style="color:var(--text2);font-weight:400">({len(FRAMEWORKS)} frameworks)</span></h3>')
+    lines.append('</div>')
+    lines.append('<div class="fw-section-body" style="display:none">')
 
     for fw in FRAMEWORKS:
         fw_name = fw["name"]
@@ -714,12 +895,12 @@ def _frameworks_html(df) -> str:
         fw_picks.sort(key=lambda p: -p["score"])
         count = len(fw_picks)
 
-        lines.append(f'<h3 style="margin-top:20px">{escape(fw_name)} '
+        lines.append(f'<h4 style="margin-top:16px;color:var(--accent)">{escape(fw_name)} '
                      f'<span style="color:var(--text2);font-weight:400">'
-                     f'— {escape(fw["author"])} ({count} stocks)</span></h3>')
+                     f'— {escape(fw["author"])} ({count} stocks)</span></h4>')
 
         if not fw_picks:
-            lines.append('<p class="meta">No qualifying stocks pass this framework in the current screening.</p>')
+            lines.append('<p class="meta">No qualifying stocks pass this framework.</p>')
             continue
 
         table_id = f'fw_{fw_name.replace(" ", "_").replace("-", "_").lower()}'
@@ -747,53 +928,31 @@ def _frameworks_html(df) -> str:
 
         lines.append('</tbody></table>')
 
-    # ── Section 3: Consolidated view — frameworks per stock ──
-    lines.append('<h3 style="margin-top:24px">Multi-Framework Consensus</h3>')
-    lines.append('<p class="meta">Stocks passing multiple frameworks carry the highest conviction. '
-                 'A stock passing 7+/10 frameworks is a rare multi-dimensional quality signal.</p>')
+    lines.append('</div></div>')  # close section body + section
 
-    from collections import Counter
-    ticker_fw_count = Counter(p["ticker"] for p in all_picks)
-    # Deduplicate: one row per ticker+framework
-    seen = set()
-    unique_picks = []
-    for p in all_picks:
-        key = (p["ticker"], p["framework"])
-        if key not in seen:
-            seen.add(key)
-            unique_picks.append(p)
-    ticker_fw_count = Counter(p["ticker"] for p in unique_picks)
-
-    all_picks_sorted = sorted(unique_picks, key=lambda p: (-ticker_fw_count[p["ticker"]], -p["score"]))
-
-    lines.append('<table id="fw_all">')
-    lines.append('<thead><tr>')
-    all_cols = [("Stock", False), ("Sector", False), ("Score", True), ("Verdict", False),
-                ("Framework", False), ("Result", False), ("Status", False),
-                ("Detail", False), ("Fw Count", True)]
-    for ci, (label, numeric) in enumerate(all_cols):
-        sort_call = f' onclick="sortTable(\'fw_all\',{ci},{str(numeric).lower()},event)" style="cursor:pointer"'
-        lines.append(f'<th{sort_call}>{label}</th>')
-    lines.append('</tr></thead><tbody>')
-
-    for p in all_picks_sorted:
-        t_score = p["score"]
-        fc = ticker_fw_count[p["ticker"]]
-        fc_color = "var(--green)" if fc >= 7 else "var(--accent)" if fc >= 5 else "var(--text2)"
-        lines.append('<tr>')
-        lines.append(f'<td><a href="#{escape(p["ticker"])}">{escape(p["ticker"])}</a><br>'
-                     f'<span style="font-size:0.75rem;color:var(--text2)">{escape(p["name"])}</span></td>')
-        lines.append(f'<td>{escape(p["sector"])}</td>')
-        lines.append(f'<td data-val="{t_score}" style="color:{_score_color(t_score, 100)};font-weight:700">{t_score:.1f}</td>')
-        lines.append(f'<td>{_verdict_badge(p["verdict"])}</td>')
-        lines.append(f'<td style="font-weight:600;font-size:0.85rem">{escape(p["framework"])}</td>')
-        lines.append(f'<td style="font-size:0.85rem">{escape(p["result"])}</td>')
-        lines.append(f'<td>{_framework_badge(p["status"])}</td>')
-        lines.append(f'<td style="font-size:0.78rem;color:var(--text2)">{escape(p["reasons"])}</td>')
-        lines.append(f'<td data-val="{fc}" style="text-align:center;font-weight:700;color:{fc_color}">{fc}/10</td>')
-        lines.append('</tr>')
-
-    lines.append('</tbody></table>')
+    # ════════════════════════════════════════════════
+    # Section 3: Framework Reference Cards (COLLAPSED)
+    # ════════════════════════════════════════════════
+    lines.append('<div class="fw-section">')
+    lines.append('<div class="fw-section-header" onclick="toggleSection(this)">')
+    lines.append('<span class="fw-chevron">&#9654;</span>')
+    lines.append(f'<h3 style="display:inline;margin:0">Framework Reference Cards '
+                 f'<span style="color:var(--text2);font-weight:400">({len(FRAMEWORKS)} published frameworks)</span></h3>')
+    lines.append('</div>')
+    lines.append('<div class="fw-section-body" style="display:none">')
+    lines.append('<p class="meta" style="margin-top:8px">Every criterion below is from a published book, academic paper, or annual study. '
+                 'No speculative or internet-derived rules.</p>')
+    lines.append('<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;">')
+    for fw in FRAMEWORKS:
+        lines.append('<div class="filter-ref">')
+        lines.append(f'<h4 style="margin-bottom:2px">{escape(fw["name"])}</h4>')
+        lines.append(f'<p style="color:var(--text2);font-size:0.82rem;margin:2px 0">'
+                     f'<strong>{escape(fw["author"])}</strong> — {escape(fw["source"])}</p>')
+        lines.append(f'<p style="font-size:0.85rem;margin:4px 0"><strong>Criteria:</strong> {escape(fw["criteria"])}</p>')
+        lines.append(f'<p style="font-size:0.82rem;margin:2px 0;color:var(--text2)"><strong>Verdict:</strong> {escape(fw["verdict"])}</p>')
+        lines.append('</div>')
+    lines.append('</div>')
+    lines.append('</div></div>')  # close section body + section
 
     return "\n".join(lines)
 
@@ -1149,10 +1308,9 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
     <div class="tab active" data-tab="tab-dashboard" onclick="showTab('tab-dashboard')">Dashboard</div>
     <div class="tab" data-tab="tab-rankings" onclick="showTab('tab-rankings')">Rankings</div>
     <div class="tab" data-tab="tab-picks" onclick="showTab('tab-picks')">Top Picks</div>
-    <div class="tab" data-tab="tab-managers" onclick="showTab('tab-managers')">Frameworks</div>
     <div class="tab" data-tab="tab-sectors" onclick="showTab('tab-sectors')">By Sector</div>
     <div class="tab" data-tab="tab-allstocks" onclick="showTab('tab-allstocks')">All Stocks</div>
-    <div class="tab" data-tab="tab-framework" onclick="showTab('tab-framework')">Framework</div>
+    <div class="tab" data-tab="tab-framework" onclick="showTab('tab-framework')">Frameworks</div>
 </div>
 """)
 
@@ -1177,31 +1335,29 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
     html_parts.append(_top_picks_html(df))
     html_parts.append('</div>')
 
-    # ── Tab 4: Investment Frameworks ──
-    html_parts.append('<div id="tab-managers" class="tab-panel">')
-    html_parts.append('<h2>Investment Frameworks &mdash; Published &amp; Verifiable</h2>')
-    html_parts.append('<p class="meta">10 published stock-picking frameworks from academic papers, books, and annual studies. '
-                     'Every criterion is auditable &mdash; no speculative or internet-derived rules. '
-                     'Stocks passing 7+/10 frameworks are rare multi-dimensional quality signals.</p>')
-    html_parts.append(_frameworks_html(df))
-    html_parts.append('</div>')
+    # ── Tab 4: By Sector ──
 
-    # ── Tab 5: By Sector ──
     html_parts.append('<div id="tab-sectors" class="tab-panel">')
     html_parts.append('<h2>Sector Breakdown</h2>')
 
-    for sector in sectors:
+    # Collapsible sector sections
+    html_parts.append('<script>function toggleSectorCollapse(idx){var b=document.getElementById("sector-body-"+idx);var h=document.getElementById("sector-header-"+idx);if(b.style.display==="none"){b.style.display="block";h.classList.add("open");}else{b.style.display="none";h.classList.remove("open");}}</script>')
+
+    for i, sector in enumerate(sectors):
         sec_df = df[df["sector"] == sector].sort_values("total_score", ascending=False)
         n = len(sec_df)
         avg = sec_df["total_score"].mean()
-        html_parts.append(f'<h3>{escape(sector)} ({n} stocks, avg {avg:.1f}/100)</h3>')
-
-        # Mini rankings table for sector
+        html_parts.append(f'<div class="fw-section">')
+        html_parts.append(f'<div class="fw-section-header" id="sector-header-{i}" onclick="toggleSectorCollapse({i})">'
+                          f'<span class="fw-chevron">&#x25BC;</span>'
+                          f'<span style="font-size:1.1em;font-weight:600">{escape(sector)}</span>'
+                          f'<span style="color:#888;font-size:0.95em">({n} stocks, avg {avg:.1f}/100)</span>'
+                          f'</div>')
+        html_parts.append(f'<div class="fw-section-body" id="sector-body-{i}" style="display:none;">')
         html_parts.append(f'<table><thead><tr>'
                           f'<th>#</th><th>Ticker</th><th>Score</th><th>Verdict</th>'
                           f'<th>PE</th><th>ROCE%</th><th>D/E</th><th>Piotroski</th><th>Moat</th>'
                           f'</tr></thead><tbody>')
-
         for rank in range(len(sec_df)):
             row = sec_df.iloc[rank]
             verdict = row.get("verdict", "REJECT")
@@ -1217,12 +1373,12 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
                               f'<td>{_fmt(row.get("piotroski_score"), ".0f")}/9</td>'
                               f'<td>{escape(str(row.get("moat", "None")))}</td>'
                               f'</tr>')
-
         html_parts.append('</tbody></table>')
+        html_parts.append('</div></div>')
 
     html_parts.append('</div>')
 
-    # ── Tab 6: All Stocks (detailed cards) ──
+    # ── Tab 5: All Stocks (detailed cards) ──
     html_parts.append('<div id="tab-allstocks" class="tab-panel">')
     html_parts.append('<h2>All Stocks &mdash; Detailed Analysis</h2>')
     for i in range(len(df)):
@@ -1233,8 +1389,19 @@ def build_report(df: pd.DataFrame, output_path: str | None = None) -> str:
         html_parts.append('</div>')
     html_parts.append('</div>')
 
-    # ── Tab 7: Framework ──
+    # ── Tab 6: Frameworks (combined: investment frameworks + scoring reference) ──
     html_parts.append('<div id="tab-framework" class="tab-panel">')
+
+    # ── Section A: Investment Frameworks ──
+    html_parts.append('<h2>Investment Frameworks &mdash; Published &amp; Verifiable</h2>')
+    html_parts.append('<p class="meta">10 published stock-picking frameworks from academic papers, books, and annual studies. '
+                     'Every criterion is auditable &mdash; no speculative or internet-derived rules. '
+                     'Stocks passing 7+/10 frameworks are rare multi-dimensional quality signals.</p>')
+    html_parts.append(_frameworks_html(df))
+
+    html_parts.append('<hr style="border-color:var(--border);margin:32px 0">')
+
+    # ── Section B: Scoring Framework Reference ──
     html_parts.append('<h2>Scoring Framework &mdash; 10 Filters + Red Flags</h2>')
     html_parts.append('<p class="meta">100-point system: 10 dimensions &times; 10 points each. Filter 11 is a binary reject gate.</p>')
 

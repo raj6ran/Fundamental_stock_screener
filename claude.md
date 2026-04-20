@@ -27,7 +27,7 @@ Stocks/
 ├── data_fetcher.py     # yfinance data retrieval, 3-tier accuracy, Piotroski, Altman Z
 ├── analyzer.py         # 10-dimension scoring engine, Graham Number, DCF, reverse DCF, moat, Magic Formula
 ├── screener.py         # Main CLI — runs sectors, generates HTML report
-├── report_generator.py # Tabbed HTML report: dashboard, rankings, stock cards, frameworks, framework reference
+report_generator.py → Tabbed HTML report: dashboard, rankings, stock cards, frameworks with scoring reference
 ├── requirements.txt    # Python dependencies (yfinance, pandas, numpy)
 └── report.html         # Visual HTML report (auto-generated, ~3.5MB)
 ```
@@ -146,7 +146,7 @@ python screener.py --sector "Healthcare"
 
 ## HTML Report Features
 
-- **7 tabs**: Dashboard, Rankings, Top Picks, **Frameworks**, By Sector, All Stocks, Framework Reference
+- **6 tabs**: Dashboard, Rankings, Top Picks, By Sector, All Stocks, **Frameworks** (investment frameworks + scoring reference)
 - **Multi-column sort**: Click column header to sort, Shift+Click for secondary/tertiary keys
 - **Verdict badges**: Color-coded (green GEM → red REJECT)
 - **Stock cards**: 10 dimension bars, intrinsic value, moat details, red flag badges
