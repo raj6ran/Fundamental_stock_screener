@@ -1,0 +1,30 @@
+name: Run Stock Screener
+
+on:
+  workflow_dispatch: # This adds a manual "Play" button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install yfinance pandas numpy requests
+
+      - name: Run Screener
+        run: |
+          python nse_screener_single.py --slow
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: nse-report
+          path: report.html
