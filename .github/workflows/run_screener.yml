@@ -1,30 +1,71 @@
 name: Run Stock Screener
 
 on:
-  workflow_dispatch: # This adds a manual "Play" button
+  workflow_dispatch:          # Manual "Run workflow" button ONLY
+    inputs:
+      sector:
+        description: 'Sector to screen (leave blank for ALL 3376 stocks)'
+        required: false
+        default: ''
+      slow:
+        description: 'Use slow mode? (recommended for full run)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  screen:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # fixes Node.js 20 deprecation warning
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # ── 1. Checkout ────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4          # was v3 → fixed
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      # ── 2. Python setup ────────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5      # was v4 → fixed
         with:
-          python-version: '3.10'
+          python-version: '3.12'
+          cache: 'pip'
 
+      # ── 3. Install dependencies ────────────────────────────────
       - name: Install dependencies
         run: |
-          pip install yfinance pandas numpy requests
+          pip install --upgrade pip
+          pip install yfinance>=0.2.30 pandas>=2.0 numpy>=1.24 requests lxml
 
-      - name: Run Screener
+      # ── 4. Run screener ────────────────────────────────────────
+      - name: Run stock screener
         run: |
-          python nse_screener_single.py --slow
+          SECTOR="${{ github.event.inputs.sector }}"
+          SLOW="${{ github.event.inputs.slow }}"
 
-      - name: Upload Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: nse-report
-          path: report.html
+          CMD="python screener.py"
+          if [ -n "$SECTOR" ]; then
+            CMD="$CMD --sector \"$SECTOR\""
+          fi
+          if [ "$SLOW" = "true" ]; then
+            CMD="$CMD --slow"
+          fi
+
+          echo "Running: $CMD"
+          eval $CMD
+        timeout-minutes: 55
+
+      # ── 5. Commit report.html back to repo ────────────────────
+      - name: Commit updated report
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add report.html screener_run.log || true
+          git diff --cached --quiet || git commit -m "Manual run $(date +'%Y-%m-%d %H:%M IST' --date='TZ=\"Asia/Kolkata\" now')"
+          git push
